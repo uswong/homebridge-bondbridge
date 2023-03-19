@@ -1,0 +1,69 @@
+{
+   "pluginAlias": "cmd4BondBridge",
+   "pluginType": "platform",
+   "singular": true,
+   "customUi": true,
+   "headerDisplay": "Homebridge plugin for BondBridge devices",
+   "schema": {
+      "type": "object",
+      "properties": {
+         "name": {
+           "title": "Name",
+           "type": "string",
+           "default": "cmd4BondBridge",
+           "required": true
+         },
+         "devices": {
+            "type": "array",
+            "items": {
+               "title": "Bond Bridge device",
+               "type": "object",
+               "properties": {
+                  "ipAddress": {
+                     "title": "IP Address",
+                     "description": "The device's IP address. It is recommended to set a static IP for this device.",
+                     "type": "string",
+                     "format": "ipv4",
+                     "required": true,
+                     "placeholder": "192.168.0.1"
+                  },
+                  "token": {
+                     "title": "Token",
+                     "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
+                     "type": "string",
+                     "required": true,
+                     "placeholder": ""
+                  },
+                  "debug": {
+                     "title": "Enable detailed debug log",
+                     "description": "Enables a detailed debug log. Useful when trying to figure out issues with the plugin.",
+                     "type": "boolean",
+                     "required": false,
+                     "default": false
+                  }
+               }
+            }
+         }
+      }
+   },
+   "layout": [
+      {
+      "type": "fieldset",
+      "title": "Bond Bridge Device Settings",
+      "description": "Enter below the IP address and the unique Token of your Bond Bridge devices.",
+      "items": [
+         ]
+      },
+      {
+      "key": "devices",
+      "type": "tabarray",
+      "title": "{{ value.ipAddress || 'new device' }}",
+      "description": "Note: only a maximum of 3 Bond Bridge devices can be processed by Config Creator.",
+      "items": [
+         "devices[].ipAddress",
+         "devices[].token",
+         "devices[].debug"
+         ]
+      }
+   ]
+}
