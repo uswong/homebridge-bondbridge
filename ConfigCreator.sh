@@ -428,7 +428,7 @@ function extractNonBBqueueTypes()
       queue=$( jq ".queueTypes[${i}].queue" "${cmd4ConfigNonBB}" )
       queueUsed=$(grep -n "${queue}" "${cmd4ConfigAccessoriesNonBB}"|head -n 1)
       if [ -n "${queueUsed}" ]; then
-         count=$(( count +1 ))
+         count=$(( count + 1 ))
          if [ "${count}" -eq 1 ]; then
             jq --indent 4 ".queueTypes[${i}]" "${cmd4ConfigNonBB}" > "${cmd4ConfigQueueTypesNonBB}"
          else
