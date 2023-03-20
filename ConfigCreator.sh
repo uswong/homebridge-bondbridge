@@ -401,7 +401,7 @@ function extractNonBBconstants()
    for ((i=0; i<noOfConstans; i++)); do
       key=$( jq ".constants[${i}].key" "${cmd4ConfigNonBB}" )
       key=${key//\"/}
-      keyUsed=$(grep -n "${key}" "${cmd4ConfigNonBB}"|grep -v 'key'|head -n 1|cut -d":" -f1)
+      keyUsed=$(grep -n "${key}" "${cmd4ConfigAccessoriesNonBB}"|grep -v 'key'|head -n 1|cut -d":" -f1)
       if [ -n "${keyUsed}" ]; then
          count=$(( count + 1 ))
          if [ "${count}" -eq 1 ]; then
@@ -476,16 +476,16 @@ function extractCmd4MiscKeys()
    fi
 }
 
-function extractNonBBconstantsQueueTypesAccessoriesMisc()
+function extractNonBBaccessoriesConstantsQueueTypesMisc()
 {
-   # extract non-BB cmd4Config by removing all the BB devices in ${cmd4ConfigJson}
+   # extract non-BB cmd4Config and non-BB accessories ${cmd4ConfigJson}
    extractCmd4ConfigNonBBandAccessoriesNonBB
 
-   # extract non-BB constants                                           
-   extractNonBBconstants
-
-   # extract non-BB quueTypes
-   extractNonBBqueueTypes
+   # extract non-BB constants and non-BB queueTypes                                          
+   if [ -f "${cmd4ConfigAccessoriesNonBB}" ]; then
+      extractNonBBconstants
+      extractNonBBqueueTypes
+   fi
 
    # extract some misc. keys existing in Cmd4
    extractCmd4MiscKeys
@@ -525,6 +525,13 @@ function writeToHomebridgeConfigJson()
    # before copying to Homebridge config.json
 
    jq --argjson cmd4Config "$(<"${cmd4ConfigJsonBBwithNonBB}")" --indent 4 '.platforms += [$cmd4Config]' "${configJson}.Cmd4less" > "${configJsonNew}"
+   rc=$?
+   if [ "${rc}" != "0" ]; then
+      echo "${TRED}${BOLD}ERROR: Writing of created Cmd4 config to config.json.new failed!${TNRM}"
+      echo "${TLBL}${BOLD}INFO: Instead you can copy/paste the content of \"${cmd4ConfigJsonBB}\" into Cmd4 JASON Config editor.${TNRM}"
+      cleanUp
+      exit 1
+   fi
 
    # Copy the "${configJsonNew}" to Homebridge config.json
    case $UIversion in
@@ -749,21 +756,18 @@ function checkForCmd4PlatformNameInFile()
  
 function cleanUp()
 {
+   rm -f "${configJson}"
+   rm -f "${cmd4ConfigJson}"
    rm -f "${configJson}.Cmd4less"
-   rm -f "${configJson}.tail"
-   rm -f "${cmd4ConfigJsonBBwithNonBB}.tmp"
-
    rm -f "${cmd4ConfigConstantsBB}"
-   rm -f "${cmd4ConfigConstantsNonBB}"
    rm -f "${cmd4ConfigQueueTypesBB}"
-   rm -f "${cmd4ConfigQueueTypesNonBB}"
    rm -f "${cmd4ConfigAccessoriesBB}"
+   rm -f "${cmd4ConfigNonBB}"
+   rm -f "${cmd4ConfigConstantsNonBB}"
+   rm -f "${cmd4ConfigQueueTypesNonBB}"
    rm -f "${cmd4ConfigAccessoriesNonBB}"
    rm -f "${cmd4ConfigMiscKeys}"
    rm -f "${cmd4ConfigJsonBBwithNonBB}"
-   rm -f "${cmd4ConfigNonBB}"
-   rm -f "${cmd4ConfigJson}"
-   rm -f "${configJson}"
    rm -f "${configJsonNew}"
 }
 
@@ -951,9 +955,9 @@ for ((n=1; n<=noOfBondBridges; n++)); do
   
    if [[ "${n}" = "1" && "${UIversion}" = "nonUI" ]]; then
       echo ""
-      if [ "${noOfBondBridges}" = "1" ]; then echo "${TLBL}INFO: Only one Bond Bridge device will be processed!${TNRM}"; fi
-      if [ "${noOfBondBridges}" = "2" ]; then echo "${TLBL}INFO: Two Bond Bridge devives will be processed!${TNRM}"; fi
-      if [ "${noOfBondBridges}" = "3" ]; then echo "${TLBL}INFO: Three Bond Bridge devices will be processed!${TNRM}"; fi
+      if [ "${noOfBondBridges}" = "1" ]; then echo "${TLBL}${BOLD}INFO: This will take up to 1 minute to process!${TNRM}"; fi
+      if [ "${noOfBondBridges}" = "2" ]; then echo "${TLBL}${BOLD}INFO: This will take up to 2 minutes to process!${TNRM}"; fi
+      if [ "${noOfBondBridges}" = "3" ]; then echo "${TLBL}${BOLD}INFO: This will take up to 3 minutes to process!${TNRM}"; fi
    fi
 
    if [ "${UIversion}" = "nonUI" ]; then
@@ -1038,7 +1042,7 @@ readHomebridgeConfigJson
 
 # Extract all non-BB related Cmd4 devices
 extractCmd4ConfigFromConfigJson
-extractNonBBconstantsQueueTypesAccessoriesMisc
+extractNonBBaccessoriesConstantsQueueTypesMisc
 
 # Assemble a complete Cmd4 configuration file for the specified BB devices(s) with the extracted 
 # non-BB related Cmd4 devices
@@ -1050,7 +1054,6 @@ writeToHomebridgeConfigJson
 if [ "${rc}" = "0" ]; then
    echo "${TGRN}${BOLD}DONE! Restart Homebridge/HOOBS for the created config to take effect OR run CheckConfig prior (recommended)${TNRM}" 
    rm -f "${cmd4ConfigJsonBB}"
-   cleanUp
    if [ "${UIversion}" = "nonUI" ]; then
       getGlobalNodeModulesPathForFile "CheckConfig.sh"
       check1="${fullPath}"
@@ -1060,7 +1063,15 @@ if [ "${rc}" = "0" ]; then
       echo "\$check1"
    fi
 else
-   echo "${TRED}${BOLD}ERROR: Copying of \"${cmd4ConfigJsonBB}\" to Homebridge config.json failed!${TNRM}"
+   # Copying of the new config.json to homebridge config.json failes so restore the homebridge config.json from backup
+   if [ "${UIversion}" = "nonUI" ]; then
+     sudo cp "${configJson}" "${homebridgeConfigJson}"
+   else
+     cp "${configJson}" "${homebridgeConfigJson}"
+   fi
+   echo "${TRED}${BOLD}ERROR: Copying of \"${cmd4ConfigJsonBB}\" to Homebridge config.json failed! Original config.json restored.${TNRM}"
    echo "${TLBL}${BOLD}INFO: Instead you can copy/paste the content of \"${cmd4ConfigJsonBB}\" into Cmd4 JASON Config editor.${TNRM}"
-   cleanUp
 fi
+
+cleanUp
+exit 0
