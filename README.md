@@ -1,5 +1,5 @@
-# homebridge-cmd4-BondBridge
-For ceiling fan with LOGIC remote control via Bond Bridge
+# homebridge-cmd4-bondbridge
+For ceiling fan with **Hunter Pacific LOGIC remote control** via **Bond Bridge**
 
 ## Introduction
 This `homebridge-cmd4-bondbridge` plugin is specifically designed for ceiling fan with `Hunter Pacific LOGIC remote control` (see image below) based on Bond V2 OpenAPI.
