@@ -64,5 +64,5 @@ This plugin does not use the built-in timers but use customer-built timers withi
 11. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
 
 ## Special Thanks:
-1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [Homebridge-cmd4-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and with which I have learnt so much in  bash and javascript coding in homebridge environment by allowing me to contribute to it.  
+1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [Homebridge-cmd4-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot on **bash** and **javascript** coding in homebridge environment.
 2. And never foeget to thank my beautiful wife who has put up with my obsession of sitting in front of a computer trying to get this plugin up and running.
