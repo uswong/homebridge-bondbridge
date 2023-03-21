@@ -11,8 +11,8 @@ This plugin does not use the built-in timers but use customer-built timers withi
 ## Installation:
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
-2. Install the [homebridge-cmd4](https://github.com/ztalbot2000/homebridge-cmd4) plug-in via the Homebridge UI ['plugins'](https://github.com/oznu/homebridge-config-ui-x#plugin-screen) tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
-3. Install `homebridge-cmd4-bondbridge` plug-in via the Homebridge UI 'plugins' tab search function.
+2. Install the `homebridge-cmd4` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
+3. Install `homebridge-cmd4-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
 4. If you have not already, install  <B>jq</B> and <B>curl</B> via your terminal or Homebridge UI terminal or through ssh: 
 
 
@@ -57,11 +57,11 @@ This plugin does not use the built-in timers but use customer-built timers withi
      ``` 
 
 
-6. Go to the 'plugins' tab in Homebridge UI and locate your newly installed `homebridge-cmd4-bondbridge`. Click `SETTINGS` and it should launch the 'Bond Bridge Configuration Creator'.
+6. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed `homebridge-cmd4-bondbridge`. Click `SETTINGS` and it should launch the **Homebridge Cmd4 BondBridge** setting dialogue page.
 
 7. Scroll down to the 'Bond Bridge Device Settings' area and fill out the `IP Address` and `Token` of your Bond Bridge device (if you have more than one Bond Bridge devices, you can click `Add new device` to setup the others), and then click `SAVE`. It will close the UI and you will need to open it once more as per Step 6.
-10. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to control in Homekit, then press the `CONFIG CREATOR` button; your Bond Bridge config will be created!
-11. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
+8. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to control in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge config. This Bond Bridge config created is stored under `homebridge-cmd4`.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
+9. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
 
 ## How You Can Help:
 * Report Bugs/Errors by opening Issues/Tickets.
