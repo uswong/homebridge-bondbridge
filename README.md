@@ -6,7 +6,9 @@ This `homebridge-cmd4-bondbridge` plugin is specially designed to control the ce
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)
 
-This plugin does not use the built-in timers but use customer-built timers within a bash script. These timers have greater flexibility and capability to turn on or off the fan and light.
+This plugin does not use the built-in timers but use customer-built timers within a bash script. These timers have greater flexibility and capability to turn on or off the fan and light. 
+
+These timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % in a scale of 6 minutes per %, or 10% = 1.0 hour.
 
 ## Installation:
 ### Raspbian/HOOBS/macOS/NAS:
