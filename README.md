@@ -16,7 +16,7 @@ You can make use of this plugin only if your ceiling fan remote is not in the Bo
 To work as intended, the remote functions need to be programmed onto the Bond Bridge RF Controller as two separate "Celing Fan" devices, one for the Fan and one for the Light:
 1. Add a "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme the `Fan Off` function and the `Fan Speed` functions under "Fan". Name the device ending with " Fan" (e.g. Bed 4 Fan). Do not programme the `Light On/Off` functions here.  
 
-     Note that the Fan Speed has intrinsic On function, as such the "Fan On" functino is not required, only the "Fan Off" function need to be programmed.  No harm done also if you do programme both On/Off functions.
+     Note that the Fan Speed has intrinsic On function, as such the "Fan On" function is not required, only the "Fan Off" function need to be programmed.  No harm done also if you do programme both On/Off functions.
 
 2. Add another "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme the `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". This LOGIC remote has 7-levels dimmer, so programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. Bed 4 Light).
 
@@ -66,8 +66,10 @@ A configuration file is required to run this plugin and it can be generated auto
 
 1. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed `homebridge-cmd4-bondbridge`. Click `SETTINGS` and it should launch the **Homebridge Cmd4 BondBridge** setting dialogue page.
 2. Scroll down to the 'Bond Bridge Device Settings' area and fill out the `IP Address` and `Token` of your Bond Bridge device (if you have more than one Bond Bridge devices, you can click `Add new device` to setup the others), and then click `SAVE`. It will close the UI and you will need to open it once more as per Step 1.
-3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge config. This Bond Bridge config created is stored under `homebridge-cmd4`.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
+3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under `homebridge-cmd4` plugin.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
 4. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
+
+     ![image](https://user-images.githubusercontent.com/96530237/226834701-308a4d2c-3cfb-47c6-9675-4d4976c7a6fc.png)
 
 
 (B) for users (e.g. HOOBS users) who do not have access to Homebridge UI will have to run the **ConfigCreator.sh** from your terminal.  Use the following terminal commands to locate and run the **ConfigCreator.sh** and follow the prompts: 
@@ -76,14 +78,16 @@ A configuration file is required to run this plugin and it can be generated auto
      config=$(find /usr 2>&1 | grep -v find | grep "homebridge-cmd4-bondbridge/ConfigCreator.sh$")
      echo "${config}"
 
-if `echo "${config}"` returns nothing, try the following:
+  if `echo "${config}"` returns nothing, try the following:
 
      config=$(find /var/lib 2>&1 | grep -v find | grep "homebridge-cmd4-bondbridge/ConfigCreator.sh$")
 
-if `echo "${config}"` returns something then use the following command to run **ConfigCreator.sh**
+  if `echo "${config}"` returns something then use the following command to run **ConfigCreator.sh**
 
      ${config}
-
+     
+  ![image](https://user-images.githubusercontent.com/96530237/226835385-dff9d40b-3ad7-43a1-95db-cafddfbf7668.png)
+ 
 
 ## How You Can Help:
 * Report Bugs/Errors by opening Issues/Tickets.
