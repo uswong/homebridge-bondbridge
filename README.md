@@ -21,9 +21,9 @@ To work as intended, the RF remote control functions need to be programmed onto 
      ![image](https://user-images.githubusercontent.com/96530237/226813380-1a867f56-61a5-42b8-ad10-5deeb7ac44f5.png)
 
 
-This plugin does not use the built-in timers but use customer-built timers within a bash script. These customer-built timers have greater flexibility and capability to turn on or off the fan and the light. 
+This plugin does not use the built-in timers but use custom-built timers within a bash script. These custom-built timers have greater flexibility and capability to turn on or off the fan and the light. 
 
-These customer-built timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % with a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. Setting the Fan Timer when the Fan is in **"Off"** state will be a `time-to-on` timer and vice versa.
+These custom-built timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % with a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. Setting the Fan Timer when the Fan is in **"Off"** state will be a `time-to-on` timer and vice versa.
 
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
