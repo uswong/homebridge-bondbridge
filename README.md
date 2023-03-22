@@ -7,31 +7,30 @@ This `homebridge-cmd4-bondbridge` plugin is specially designed to control ceilin
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
-
-
-
-You can make use of this plugin only if your ceiling fan remote is not in the Bond Bridge database and it has a Light with Dimmer, otherwise you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
+You can make use of this plugin only if your ceiling fan is fitted with a RF remote which is not in the **Bond Bridge** database and it has a **Light** with **Dimmer** function, otherwise you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
 
 ## How to programme my RF remote control functions onto Bond Bridge RF Controller
-To work as intended, the remote functions need to be programmed onto the Bond Bridge RF Controller as two separate "Celing Fan" devices, one for the Fan and one for the Light:
-1. Add a "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme the `Fan Off` function and the `Fan Speed` functions under "Fan". Name the device ending with " Fan" (e.g. Bed 4 Fan). Do not programme the `Light On/Off` functions here.  
+To work as intended, the RF remote control functions need to be programmed onto the **Bond Bridge RF Controller** as two separate **"Celing Fan"** devices, one for the **Fan** and one for the **Light**:
+1. Add a **"Ceiling Fan"** device onto **Bond Bridge RF Controller** and programme the `Fan Off` function and the `Fan Speed` functions under **"Fan"**. Name the device ending with " Fan" (e.g. "Bed 4 Fan"). Do not programme the `Light On/Off` functions here.  
 
-     Note that the Fan Speed has intrinsic On function, as such the "Fan On" function is not required, only the "Fan Off" function need to be programmed.  No harm done also if you do programme both On/Off functions.
+     Note that the Fan Speed has intrinsic **"On"** function, as such the **"Fan On"** function is not required, only the **"Fan Off"** function need to be programmed.  No harm done also if you do programme both **"On/Off"** functions.
 
-2. Add another "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme the `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". This LOGIC remote has 7-levels dimmer, so programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. Bed 4 Light).
+2. Add another **"Ceiling Fan"** device onto **Bond Bridge RF Controller** and programme the `Light On/Off` functions under **"Light"** and programme the `Light Dimmer` functions under **"Fan"** as **"Fan Speed"**. My LOGIC RF remote control has 7-levels dimmer, so I programmed them as "Speed 1", "Speed 2", etc.  Name this device ending with **" Light"** (e.g. **"Bed 4 Light"**).
 
 
      ![image](https://user-images.githubusercontent.com/96530237/226813380-1a867f56-61a5-42b8-ad10-5deeb7ac44f5.png)
 
 
-This plugin does not use the built-in timers but use customer-built timers within a bash script. These timers have greater flexibility and capability to turn on or off the fan and the light. 
+This plugin does not use the built-in timers but use customer-built timers within a bash script. These customer-built timers have greater flexibility and capability to turn on or off the fan and the light. 
 
-These timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % in a scale of 6 minutes per 1%, or 10% = 1.0 hour. Setting the Fan Timer when the Fan is in Off state will be a `time-to-on` timer and vice versa.
+These customer-built timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % with a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. Setting the Fan Timer when the Fan is in **"Off"** state will be a `time-to-on` timer and vice versa.
 
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
-2. Install the `homebridge-cmd4` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
+2. Install the **`homebridge-cmd4`** plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
+     
+     Note: **`homebridge-cmd4`** plug-in is essential because the **`homebridge-cmd4-bondbridge`** plug-in is dependent on it.
 3. Install `homebridge-cmd4-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
 4. If you have not already, install  <B>jq</B> and <B>curl</B> via your terminal or Homebridge UI terminal or through ssh: 
 
@@ -64,9 +63,9 @@ A configuration file is required to run this plugin and it can be generated auto
 
 (A) Homebridge users with access to the Homebridge web UI can follow the steps below to run the script:
 
-1. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed `homebridge-cmd4-bondbridge`. Click `SETTINGS` and it should launch the **Homebridge Cmd4 BondBridge** setting dialogue page.
-2. Scroll down to the 'Bond Bridge Device Settings' area and fill out the `IP Address` and `Token` of your Bond Bridge device (if you have more than one Bond Bridge devices, you can click `Add new device` to setup the others), and then click `SAVE`. It will close the UI and you will need to open it once more as per Step 1.
-3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under `homebridge-cmd4` plugin.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
+1. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed **`homebridge-cmd4-bondbridge`**. Click `SETTINGS` and it should launch the **Homebridge Cmd4 BondBridge** setting dialogue page.
+2. Scroll down to the **'Bond Bridge Device Settings'** area and fill out the **`IP Address`** and **`Token`** of your **Bond Bridge** device (if you have more than one **Bond Bridge** devices, you can click **`Add new device`** to setup the others), and then click `SAVE`. It will close the UI and you will need to open it once more as per Step 1.
+3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under **`homebridge-cmd4`** plugin.  You can have a look at this config by clicking **`SETTING`** of **`homebridge-cmd4`** plugin.
 4. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
 
      ![image](https://user-images.githubusercontent.com/96530237/226834701-308a4d2c-3cfb-47c6-9675-4d4976c7a6fc.png)
