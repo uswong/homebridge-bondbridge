@@ -12,7 +12,7 @@ This `homebridge-cmd4-bondbridge` plugin is specially designed to control ceilin
 
 You can make use of this plugin only if your ceiling fan remote is not in the Bond Bridge database and it has a Light with Dimmer, otherwise you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
 
-## How to programme my remote functions onto Bond Bridge RF Controller
+## How to programme my RF remote control functions onto Bond Bridge RF Controller
 To work as intended, the remote functions need to be programmed onto the Bond Bridge RF Controller as two separate "Celing Fan" devices, one for the Fan and one for the Light:
 1. Add a "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme The `Fan Off` function and the `Fan Speed` functions under "Fan". Name the device ending with " Fan" (e.g. Bed 4 Fan). Do not programme the `Light On/Off` functions here.  
 
