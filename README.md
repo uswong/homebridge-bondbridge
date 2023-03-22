@@ -20,6 +20,10 @@ To work as intended, the remote functions need to be programmed onto the Bond Br
 
 2. Add another "Ceiling Fan" device onto **Bond Bridge RF Controller** and programme The `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". This LOGIC remote has 7-levels dimmer, so programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. Bed 4 Light).
 
+
+     ![image](https://user-images.githubusercontent.com/96530237/226813380-1a867f56-61a5-42b8-ad10-5deeb7ac44f5.png)
+
+
 This plugin does not use the built-in timers but use customer-built timers within a bash script. These timers have greater flexibility and capability to turn on or off the fan and the light. 
 
 These timers used 'Lightbulb' accessory as proxy and `time-to-on` and `time-to-off` is set in % in a scale of 6 minutes per 1%, or 10% = 1.0 hour. Setting the Fan Timer when the Fan is in Off state will be a `time-to-on` timer and vice versa.
