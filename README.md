@@ -23,8 +23,6 @@ To work as intended, the RF remote control functions need to be programmed onto 
 
 This plugin does not use the built-in timers but use custom-built timers within a bash script. These custom-built timers have greater flexibility and capability to turn on or off the fan and the light. 
 
-These custom-built timers used 'Lightbulb' accessory as proxy and **`time-to-on`** and **`time-to-off`** is set in % with a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. Setting the Fan Timer when the Fan is in "Off" state will be a **`time-to-on`** timer and vice versa.
-
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
@@ -68,7 +66,7 @@ A configuration file is required to run this plugin and it can be generated auto
 3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under `homebridge-cmd4` plugin.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
 4. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
 
-     ![image](https://user-images.githubusercontent.com/96530237/227066562-3d55bd05-a98f-4e34-bd42-a52d49ae07af.png)
+     ![image](https://user-images.githubusercontent.com/96530237/227156412-c6ef8bb6-8cde-495b-9c1b-5b2e3b9c1603.png)
 
 (B) for users (e.g. HOOBS users) who do not have access to Homebridge UI will have to run the **ConfigCreator.sh** from your terminal.  Use the following terminal commands to locate and run the **ConfigCreator.sh** and follow the prompts: 
 
@@ -86,6 +84,12 @@ A configuration file is required to run this plugin and it can be generated auto
      
   ![image](https://user-images.githubusercontent.com/96530237/226835385-dff9d40b-3ad7-43a1-95db-cafddfbf7668.png)
  
+ ## What you expect to see in Homekit:
+You should expect to see 4 Homekit tiles per ceiling fan/light. One for the Fan with speed control, one for the Light with brightness control, one for the Fan Timer and another for the Light Timer. 
+
+![image](https://user-images.githubusercontent.com/96530237/227201500-5e0111cd-1a05-4d0c-82ea-8460e8156b83.png)
+
+The Timers are custom-built timers and used 'Lightbulb' accessory as a proxy and 'Brightness' in % have a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. You can set either **`time-to-on`** or **`time-to-off`** timer.  Setting the Fan or Light Timer when the Fan or Light is in "Off" state will be a **`time-to-on`** timer and vice versa.
 
 ## How You Can Help:
 * Report Bugs/Errors by opening Issues/Tickets.
