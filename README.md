@@ -56,7 +56,7 @@ This plugin does not use the built-in timers but use custom-built timers within 
      apk add curl
      ```
 
-## Configuring the plugin
+## Configuring the Plugin
 A configuration file is required to run this plugin and it can be generated automatically by running the script **ConfigCreator.sh**.
 
 (A) Homebridge users with access to the Homebridge web UI can follow the steps below to run the script:
@@ -84,18 +84,18 @@ A configuration file is required to run this plugin and it can be generated auto
      
   ![image](https://user-images.githubusercontent.com/96530237/226835385-dff9d40b-3ad7-43a1-95db-cafddfbf7668.png)
  
- ## What you expect to see in Homekit:
+ ## What You Expect to See in Homekit
 You should expect to see 4 Homekit tiles per ceiling fan/light. One for the Fan with speed control, one for the Light with brightness control, one for the Fan Timer and another for the Light Timer. 
 
 ![image](https://user-images.githubusercontent.com/96530237/227201500-5e0111cd-1a05-4d0c-82ea-8460e8156b83.png)
 
 The Timers are custom-built timers and used 'Lightbulb' accessory as a proxy and 'Brightness' in % have a scale of 6 minutes per 1%, or 10% = 1.0 hour and a maximum of 10 hours timer can be set. You can set either **`time-to-on`** or **`time-to-off`** timer.  Setting the Fan or Light Timer when the Fan or Light is in "Off" state will be a **`time-to-on`** timer and vice versa.
 
-## How You Can Help:
+## How You Can Help
 * Report Bugs/Errors by opening Issues/Tickets.
 * Suggest Improvements and Features you would like to see!
 
-## Special Thanks:
+## Special Thanks
 1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [homebridge-cmd4-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot on **bash** and **javascript** coding in homebridge environment.
 2. Many thanks also to [John Talbot](https://github.com/ztalbot2000) for his fantastic [homebridge-cmd4](https://github.com/mitch7391/homebridge-cmd4) plugin with which I can do wonderful things in Homekit.
 3. And never forget to thank my beautiful wife who has put up with my obsession on this.....
