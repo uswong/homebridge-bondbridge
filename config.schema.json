@@ -28,7 +28,7 @@
                      "placeholder": "192.168.0.1"
                   },
                   "token": {
-                     "title": "Token",
+                     "title": "Local Token",
                      "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
                      "type": "string",
                      "required": true,
