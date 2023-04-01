@@ -12,10 +12,10 @@
 #    e. click "CONFIG CREATOR" button 
 #
 # 2. from a terminal
-#    a. find out where the bash script "ConfigCreator.sh" is installed (please see plugin wiki for details)  
+#    a. find out where the bash script "ConfigCreator.sh" is installed (please see plugin README for details)  
 #    b. run the bash script ConfigCreator.sh 
-#    c. Enter the name and IP address of your BondBridge device(s) - up to 3 systems can be processed
-#    d. you can choose whether you want the fan to be setup as fanSwitch or not
+#    c. Enter the IP address and Local Token of your BondBridge device(s) - up to 3 systems can be processed
+#    d. you can choose whether you want the have a 'Full Setup' or 'Partial Setup' and whether you want to have the 'Timers'.
 #    e. you might need to enter the path to BondBridge.sh if it is not found by the script. 
 #    f. you might also need to enter the path to the Homebridge config.json file if it is not found by the script.
 #      
