@@ -15,7 +15,7 @@ To work as intended, the RF remote control functions need to be programmed onto 
 
      Note that the Fan Speed has intrinsic "On" function, as such the "Fan On" function is not required, only the "Fan Off" function need to be programmed.  No harm done also if you do programme both "On/Off" functions.
 
-2. Add another **"Ceiling Fan"** device onto Bond Bridge RF Controller and programme the `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". My LOGIC RF remote control has 7-levels dimmer, so I programmed them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. "Bed 4 Light").
+2. Add another **"Ceiling Fan"** device onto Bond Bridge RF Controller and programme the `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". For example, the LOGIC RF remote control has 7-levels dimmer, you should programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. "Bed 4 Light").
 
 
      ![image](https://user-images.githubusercontent.com/96530237/226813380-1a867f56-61a5-42b8-ad10-5deeb7ac44f5.png)
@@ -85,7 +85,7 @@ A configuration file is required to run this plugin and it can be generated auto
   ![image](https://user-images.githubusercontent.com/96530237/226835385-dff9d40b-3ad7-43a1-95db-cafddfbf7668.png)
  
  ## What You Expect to See in Homekit
-You should expect to see 4 Homekit tiles per ceiling fan/light. One for the Fan with speed control, one for the Light with brightness control, one for the Fan Timer and another for the Light Timer. 
+For 'Full Setup' with 'Timers', you should expect to see 4 Homekit tiles per ceiling fan/light; one for the Fan with speed control, one for the Light with brightness control, one for the Fan Timer and another for the Light Timer (not shown, it is similar to the Fan Timer). 
 
 ![image](https://user-images.githubusercontent.com/96530237/227201500-5e0111cd-1a05-4d0c-82ea-8460e8156b83.png)
 
