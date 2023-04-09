@@ -21,27 +21,6 @@
     "accessories": [
         {
             "type": "Lightbulb",
-            "displayName": "Master Fan Timer",
-            "on": "FALSE",
-            "brightness": 0,
-            "name": "Master Fan Timer",
-            "manufacturer": "OLIBRA",
-            "model": "BD-1000",
-            "serialNumber": "ZZEJ51347",
-            "queue": "BBA",
-            "polling": [
-                {
-                    "characteristic": "on"
-                },
-                {
-                    "characteristic": "brightness"
-                }
-            ],
-            "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
-            "state_cmd_suffix": "fanTimer 'token:df60c5b500bcd518' 'device:2c31a3d0' 'fanDevice:0d3a13c2' ${BBIP}"
-        },
-        {
-            "type": "Lightbulb",
             "displayName": "Master Light Dimmer",
             "on": "FALSE",
             "brightness": 25,
@@ -60,6 +39,27 @@
             ],
             "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
             "state_cmd_suffix": "dimmer 'token:df60c5b500bcd518' 'device:406eb9b1' ${BBIP}"
+        },
+        {
+            "type": "Lightbulb",
+            "displayName": "Master Fan Timer",
+            "on": "FALSE",
+            "brightness": 0,
+            "name": "Master Fan Timer",
+            "manufacturer": "OLIBRA",
+            "model": "BD-1000",
+            "serialNumber": "ZZEJ51347",
+            "queue": "BBA",
+            "polling": [
+                {
+                    "characteristic": "on"
+                },
+                {
+                    "characteristic": "brightness"
+                }
+            ],
+            "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
+            "state_cmd_suffix": "fanTimer 'token:df60c5b500bcd518' 'device:2c31a3d0' 'fanDevice:0d3a13c2' ${BBIP}"
         },
         {
             "type": "Lightbulb",
