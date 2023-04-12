@@ -12,10 +12,10 @@
 #    e. click "CONFIG CREATOR" button 
 #
 # 2. from a terminal
-#    a. find out where the bash script "ConfigCreator.sh" is installed (please see plugin README for details)  
+#    a. find out where the bash script "ConfigCreator.sh" is installed (please see plugin wiki for details)  
 #    b. run the bash script ConfigCreator.sh 
-#    c. Enter the IP address and Local Token of your BondBridge device(s) - up to 3 systems can be processed
-#    d. you can choose whether you want the have a 'Full Setup' or 'Partial Setup' and whether you want to have the 'Timers'.
+#    c. Enter the name and IP address of your BondBridge device(s) - up to 3 systems can be processed
+#    d. you can choose whether you want the fan to be setup as fanSwitch or not
 #    e. you might need to enter the path to BondBridge.sh if it is not found by the script. 
 #    f. you might also need to enter the path to the Homebridge config.json file if it is not found by the script.
 #      
@@ -542,6 +542,8 @@ function writeToHomebridgeConfigJson()
       nonUI )
          sudo cp "${configJsonNew}" "${homebridgeConfigJson}"
          rc=$?
+         # copy and use the enhanced version of Cmd4PriorityPollingQueue.js if available and Cmd4 version is v7.0.0
+         copyEnhancedCmd4PriorityPollingQueueJs
       ;;
    esac
 }
@@ -753,7 +755,27 @@ function checkForCmd4PlatformNameInFile()
    done
 }
 
- 
+function copyEnhancedCmd4PriorityPollingQueueJs()
+{
+   # if the enhanced version of "Cmd4PriorityPollingQueue.txt" is present and Cmd4 version is 7.0.0, then use this enhanced verison.
+   getGlobalNodeModulesPathForFile "Cmd4PriorityPollingQueue.txt"
+   if [ -n "${fullPath}" ]; then
+      fullPath_txt="${fullPath}"
+      fullPath="${fullPath%/*}"
+      fullPath_package="${fullPath%/*}/homebridge-cmd4/package.json"
+      # check the Cmd4 version
+      Cmd4_version="$(jq '.version' "${fullPath_package}")"
+      if expr "${Cmd4_version}" : '"7.0.0[-a-z0-9]*"' >/dev/null; then
+         fullPath_js="${fullPath%/*}/homebridge-cmd4/Cmd4PriorityPollingQueue.js"
+         sudo cp "${fullPath_txt}" "${fullPath_js}"
+         if [ "$?" = "0" ]; then
+            echo "${TLBL}INFO: An enhanced version of ${BOLD}\"Cmd4PriorityPollingQueue.js\"${TNRM}${TLBL} located and copied to Cmd4 plugin.${TNRM}"
+            echo ""
+         fi
+      fi 
+  fi
+}
+   
 function cleanUp()
 {
    rm -f "${configJson}"
