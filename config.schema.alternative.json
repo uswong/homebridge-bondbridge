@@ -1,0 +1,335 @@
+{
+   "pluginAlias": "cmd4BondBridge",
+   "pluginType": "platform",
+   "singular": true,
+   "customUi": true,
+   "headerDisplay": "Homebridge plugin for BondBridge devices",
+   "schema": {
+      "type": "object",
+      "properties": {
+         "name": {
+            "title": "Name",
+            "type": "string",
+            "default": "cmd4BondBridge",
+            "required": true
+         },
+         "devices": {
+            "type": "array",
+            "items": {
+               "title": "Bond Bridge device",
+               "type": "object",
+               "properties": {
+                  "ipAddress": {
+                     "title": "IP Address",
+                     "description": "The device's IP address. It is recommended to set a static IP for this device.",
+                     "type": "string",
+                     "format": "ipv4",
+                     "required": true,
+                     "placeholder": "192.168.0.1"
+                  },
+                  "token": {
+                     "title": "Local Token",
+                     "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
+                     "type": "string",
+                     "required": true,
+                     "placeholder": ""
+                  },
+                  "debug": {
+                     "title": "Enable detailed debug log",
+                     "description": "Enables a detailed debug log. Useful when trying to figure out issues with the plugin.",
+                     "type": "boolean",
+                     "required": false,
+                     "default": false
+                  }
+               }
+            }
+         },
+         "debug": {
+            "title": "Enable debugging of Cmd4",
+            "type": "boolean",
+            "default": false,
+            "required": true
+         },
+         "outputConstants": {
+            "title": "Output Constants",
+            "type": "boolean",
+            "default": false,
+            "required": true
+         },
+         "statusMsg": {
+            "title": "Status Messages",
+            "type": "boolean",
+            "default": false,
+            "required": true
+         },
+         "timeout": {
+            "title": "Timeout",
+            "type": "number",
+            "default": 60000,
+            "required": true
+         },
+         "stateChangeResponseTime": {
+            "title": "State Change Response Time",
+            "type": "number",
+            "default": 0,
+            "required": true
+         },
+         "constants": {
+            "type": "array",
+            "items": {
+               "title": "Constants",
+               "type": "object",
+               "properties": {
+                  "key": {
+                     "title": "Key",
+                     "type": "string",
+                     "default": "${BBIP}",
+                     "required": true
+                  },
+                  "value": {
+                     "title": "Value",
+                     "type": "string",
+                     "format": "ipv4",
+                     "default": "192.168.0.31",
+                     "required": true
+                  }
+               }
+            }
+         },
+         "queueTypes": {
+            "type": "array",
+            "items": {
+               "title": "QueueTypes",
+               "type": "object",
+               "properties": {
+                  "queue": {
+                     "title": "Queue",
+                     "type": "string",
+                     "default": "BBA",
+                     "required": true
+                  },
+                  "queue": {
+                     "title": "Queue",
+                     "type": "string",
+                     "default": "BBA",
+                     "required": true
+                  },
+                  "retries": {
+                     "title": "Retries",
+                     "type": "number",
+                     "default": 0,
+                     "required": false
+                  }
+               }
+            }
+         },
+         "accessories": {
+            "type": "array",
+            "items": {
+               "title": "Accessories",
+               "type": "object",
+               "required": true,
+               "properties": {
+                  "type": {
+                     "title": "Type",
+                     "type": "string",
+                     "required": true
+                  },
+                  "displayName": {
+                     "title": "Display Name",
+                     "type": "string",
+                     "required": true
+                  },
+                  "on": {
+                     "title": "On",
+                     "type": "string",
+                     "required": false
+                  },
+                  "brightness": {
+                     "title": "Brightness",
+                     "type": "number",
+                     "required": false
+                  },
+                  "rotationSpeed": {
+                     "title": "Rotation Speed",
+                     "type": "number",
+                     "required": false
+                  },
+                  "currentHeatingCoolingState": {
+                     "title": "Current Heating Cooling State",
+                     "type": "number",
+                     "required": false
+                  },
+                  "targetHeatingCoolingState": {
+                     "title": "Target Heating Cooling State",
+                     "type": "number",
+                     "required": false
+                  },
+                  "currentTemperature": {
+                     "title": "Current Temperature",
+                     "type": "number",
+                     "required": false
+                  },
+                  "targetTemperature": {
+                     "title": "Target Temperature",
+                     "type": "number",
+                     "required": false
+                  },
+                  "name": {
+                     "title": "Name",
+                     "type": "string",
+                     "required": true
+                  },
+                  "manufacturer": {
+                     "title": "Manufacturer",
+                     "type": "string",
+                     "required": true
+                  },
+                  "model": {
+                     "title": "Model",
+                     "type": "string",
+                     "required": true
+                  },
+                  "serialNumber": {
+                     "title": "Serial Number",
+                     "type": "string",
+                     "required": true
+                  },
+                  "queue": {
+                     "title": "Queue",
+                     "type": "string",
+                     "required": true
+                  },
+                  "polling": {
+                     "type": "array",
+                     "items": {
+                        "title": "Polling1",
+                        "type": "object",
+                        "properties": {
+                           "characteristic": {
+                              "title": "Characteristic",
+                              "type": "string",
+                              "required": false
+                           }
+                        }
+                     }
+                  },
+                  "state_cmd": {
+                     "title": "State_cmd",
+                     "type": "string",
+                     "required": true
+                  },
+                  "state_cmd_suffix": {
+                     "title": "State_cmd_suffix",
+                     "type": "string",
+                     "required": true
+                  },
+                  "linkedTypes": {
+                     "type": "array",
+                     "required": false,
+                     "items": {
+                        "title": "LinkedTypes",
+                        "type": "object",
+                        "properties": {
+                           "type": {
+                              "title": "Type",
+                              "type": "string",
+                              "required": true
+                           },
+                           "displayName": {
+                              "title": "Display Name",
+                              "type": "string",
+                              "required": true
+                           },
+                           "on": {
+                              "title": "On",
+                              "type": "string",
+                              "required": false
+                           },
+                           "brightness": {
+                              "title": "Brightness",
+                              "type": "number",
+                              "required": false
+                           },
+                           "rotationSpeed": {
+                              "title": "Rotation Speed",
+                              "type": "number",
+                              "required": false
+                           },
+                           "name": {
+                              "title": "Name",
+                              "type": "string",
+                              "required": true
+                           },
+                           "manufacturer": {
+                              "title": "Manufacturer",
+                              "type": "string",
+                              "required": true
+                           },
+                           "model": {
+                              "title": "Model",
+                              "type": "string",
+                              "required": true
+                           },
+                           "serialNumber": {
+                              "title": "Serial Number",
+                              "type": "string",
+                              "required": true
+                           },
+                           "queue": {
+                              "title": "Queue",
+                              "type": "string",
+                              "required": true
+                           },
+                           "polling": {
+                              "type": "array",
+                              "items": {
+                                 "title": "Polling1",
+                                 "type": "object",
+                                 "properties": {
+                                    "characteristic": {
+                                       "title": "Characteristic",
+                                       "type": "string",
+                                       "required": false
+                                    }
+                                 }
+                              }
+                           },
+                           "state_cmd": {
+                              "title": "State_cmd",
+                              "type": "string",
+                              "required": true
+                           },
+                           "state_cmd_suffix": {
+                              "title": "State_cmd_suffix",
+                              "type": "string",
+                              "required": true
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   },
+   "layout": [
+      {
+         "type": "fieldset",
+         "title": "Bond Bridge Device Settings",
+         "description": "Enter below the IP address and the unique Token of your Bond Bridge devices.",
+         "items": []
+      },
+      {
+         "key": "devices",
+         "type": "tabarray",
+         "title": "{{ value.ipAddress || 'new device' }}",
+         "description": "Note: only a maximum of 3 Bond Bridge devices can be processed by Config Creator.",
+         "items": [
+            "devices[].ipAddress",
+            "devices[].token",
+            "devices[].debug"
+         ]
+      }
+   ]
+}
