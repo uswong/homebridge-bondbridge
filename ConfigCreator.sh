@@ -356,29 +356,32 @@ function extractCmd4ConfigNonBBandAccessoriesNonBB()
 {
    BBaccessories=""
    count=0
-   noOfAccessories=$(( $( jq ".accessories|keys" "${cmd4ConfigJson}" | wc -w) - 2 ))
-   for (( i=0; i<noOfAccessories; i++ )); do
-      cmd4StateCmd=$( jq ".accessories[${i}].state_cmd" "${cmd4ConfigJson}" | grep -n "homebridge-cmd4-bondbridge" )
+   presenceOfAccessories=$(jq ".accessories" "${cmd4ConfigJson}")
+   if [ "${presenceOfAccessories}" != "null" ]; then
+      noOfAccessories=$(( $( jq ".accessories|keys" "${cmd4ConfigJson}" | wc -w) - 2 ))
+      for (( i=0; i<noOfAccessories; i++ )); do
+         cmd4StateCmd=$( jq ".accessories[${i}].state_cmd" "${cmd4ConfigJson}" | grep -n "homebridge-cmd4-bondbridge" )
 
-      # save the ${i} n a string for use to delete the BB accessories from ${cmd4ConfigJson}
-      if [ "${cmd4StateCmd}" != "" ]; then
-         if [ "${BBaccessories}" = "" ]; then
-            BBaccessories="${i}"
-         else
-            BBaccessories="${BBaccessories},${i}"
+         # save the ${i} n a string for use to delete the BB accessories from ${cmd4ConfigJson}
+         if [ "${cmd4StateCmd}" != "" ]; then
+            if [ "${BBaccessories}" = "" ]; then
+               BBaccessories="${i}"
+            else
+               BBaccessories="${BBaccessories},${i}"
+            fi
+         else   # create the non-BB accessories
+            count=$(( count + 1 ))
+            if [ "${count}" -eq 1 ]; then
+               jq --indent 4 ".accessories[${i}]" "${cmd4ConfigJson}" > "${cmd4ConfigAccessoriesNonBB}"
+            else
+               sed '$d' "${cmd4ConfigAccessoriesNonBB}" > "${cmd4ConfigAccessoriesNonBB}.tmp"
+               mv "${cmd4ConfigAccessoriesNonBB}.tmp" "${cmd4ConfigAccessoriesNonBB}"
+               echo "}," >> "${cmd4ConfigAccessoriesNonBB}"
+               jq --indent 4 ".accessories[${i}]" "${cmd4ConfigJson}" >> "${cmd4ConfigAccessoriesNonBB}"
+            fi
          fi
-      else   # create the non-BB accessories
-         count=$(( count + 1 ))
-         if [ "${count}" -eq 1 ]; then
-            jq --indent 4 ".accessories[${i}]" "${cmd4ConfigJson}" > "${cmd4ConfigAccessoriesNonBB}"
-         else
-            sed '$d' "${cmd4ConfigAccessoriesNonBB}" > "${cmd4ConfigAccessoriesNonBB}.tmp"
-            mv "${cmd4ConfigAccessoriesNonBB}.tmp" "${cmd4ConfigAccessoriesNonBB}"
-            echo "}," >> "${cmd4ConfigAccessoriesNonBB}"
-            jq --indent 4 ".accessories[${i}]" "${cmd4ConfigJson}" >> "${cmd4ConfigAccessoriesNonBB}"
-         fi
-      fi
-   done
+      done
+   fi
 
    # delete the BB accessories to create ${cmd4ConfigNonBB} for use later 
    if [ "${BBaccessories}" = "" ]; then
