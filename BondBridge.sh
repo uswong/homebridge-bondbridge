@@ -33,7 +33,7 @@ state="{}"
 # Default values
 argSTART=4
 logErrors=true
-debugSpecified=false
+debugSpecified=false 
 lightSpecified=false
 dimmerSpecified=false
 fanSpecified=false
@@ -72,7 +72,7 @@ function logError()
    local sfx
    sfx="$rc-$io-$device-$characteristic"
    sfx=${sfx// /_}
-   local fileName="${tmpSubDir}/BondBridgeError-${sfx}.txt"
+   local fileName="${tmpSubDir}/BBerror-${sfx}.txt"
    file=$(find "${fileName}"* 2>&1|grep -v find)
    #
    # append a counter to the file so that the number of same error is logged
@@ -159,7 +159,7 @@ function queryBondBridge()
    fi  
 
    if [ "$queryType" = "copy1" ]; then
-      state=$(cat "${stateFile}")
+      state=$(jq -ec '.' "${stateFile}")
       rc=$?
    else
       state=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IP}"/v2/devices/"${Device}"/state)
@@ -229,17 +229,18 @@ function updateBondBridgeStateFile()
 function queryTimerStateFile()
 {
    local Device="$1"
+   local rc=0
 
    if [ -n "$2" ]; then
       queryType="$2"
    fi
 
    if [ -f "$BONDBRIDGE_STATE_FILE" ]; then
-      state=$(cat "${BONDBRIDGE_STATE_FILE}")
+      state=$(jq -ec '.' "${BONDBRIDGE_STATE_FILE}")
       rc=$?
-   else
+   fi
+   if [[ "${rc}" != "0" || -z "$state" ]]; then
       state="{\"timeToOn\":0,\"timeToOff\":0,\"setTime\":0}"
-      rc=$?
       echo "$state" > "$BONDBRIDGE_STATE_FILE"
    fi 
 
