@@ -898,7 +898,7 @@ class UiServer extends HomebridgePluginUiServer
                  if ( homebridgePath )
                  {
                     let dirname = path.dirname( homebridgePath );
-                    dirname = dirname.replace(/\/[^\/]+$/, '');
+                    dirname = dirname.replace(/\/[^/]+$/, '');
                     fullPath = `${dirname}${ file }`;
 
                     if ( fs.existsSync( fullPath ) )
