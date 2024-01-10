@@ -545,10 +545,11 @@ function writeToHomebridgeConfigJson()
       nonUI )
          sudo cp "${configJsonNew}" "${homebridgeConfigJson}"
          rc=$?
-         # copy and use the enhanced version of Cmd4PriorityPollingQueue.js if available and Cmd4 version is v7.0.0
-         copyEnhancedCmd4PriorityPollingQueueJs
       ;;
    esac
+
+   # copy and use the enhanced version of Cmd4PriorityPollingQueue.js if the Cmd4 version is v7.0.0 or v7.0.1 or v7.0.2
+   copyEnhancedCmd4PriorityPollingQueueJs
 }
 
 function getGlobalNodeModulesPathForFile()
@@ -785,19 +786,35 @@ function checkForCmd4PlatformNameInFile()
 
 function copyEnhancedCmd4PriorityPollingQueueJs()
 {
-   # if the enhanced version of "Cmd4PriorityPollingQueue.txt" is present and Cmd4 version is 7.0.0, then use this enhanced verison.
+   # if the enhanced version of "Cmd4PriorityPollingQueue.txt" is present and Cmd4 version is 7.0.0 or 7.0.1 or 7.0.2, then use this enhanced verison.
    getGlobalNodeModulesPathForFile "Cmd4PriorityPollingQueue.txt"
    if [ -n "${fullPath}" ]; then
       fullPath_txt="${fullPath}"
       fullPath_package="${fullPath%/*/*}/homebridge-cmd4/package.json"
       # check the Cmd4 version
       Cmd4_version="$(jq '.version' "${fullPath_package}")"
-      if expr "${Cmd4_version}" : '"7.0.[0-1][-a-z0-9]*"' >/dev/null; then
+      if expr "${Cmd4_version}" : '"7.0.[0-2]"' >/dev/null; then
          fullPath_js="${fullPath%/*/*}/homebridge-cmd4/Cmd4PriorityPollingQueue.js"
-         if sudo cp "${fullPath_txt}" "${fullPath_js}"; then
-            echo "${TLBL}INFO: An enhanced version of ${BOLD}\"Cmd4PriorityPollingQueue.js\"${TNRM}${TLBL} was located and copied to Cmd4 plugin.${TNRM}"
-            echo ""
-         fi
+         case $UIversion in
+            customUI )
+               if cp "${fullPath_txt}" "${fullPath_js}"; then
+                  echo "COPIED and "
+               else
+                  echo "NOT COPIED but "
+               fi
+            ;;
+            nonUI )
+               if sudo cp "${fullPath_txt}" "${fullPath_js}"; then
+                  echo "${TLBL}INFO: An enhanced version of ${BOLD}\"Cmd4PriorityPollingQueue.js\"${TNRM}${TLBL} was located and copied to Cmd4 plugin.${TNRM}"
+                  echo ""
+               else
+                  echo "${TYEL}WARNING: An enhanced version of ${BOLD}\"Cmd4PriorityPollingQueue.js\"${TNRM}${TYEL} was NOT copied to Cmd4 plugin."
+                  echo "         Please copy it manually.${TNRM}"
+                  echo ""
+
+               fi
+            ;;
+         esac
       fi 
   fi
 }
@@ -1100,7 +1117,7 @@ assembleCmd4ConfigJsonBBwithNonBB
 writeToHomebridgeConfigJson
 
 if [ "${rc}" = "0" ]; then
-   echo "${TGRN}${BOLD}DONE! Restart Homebridge/HOOBS for the created config to take effect OR run CheckConfig prior (recommended)${TNRM}" 
+   echo "${TGRN}${BOLD}DONE! Run CheckConfig then restart Homebridge or HOOBS.${TNRM}" 
    rm -f "${cmd4ConfigJsonBB}"
    if [ "${UIversion}" = "nonUI" ]; then
       check1="${BONDBRIDGE_SH_PATH%/*}/CheckConfig.sh"
