@@ -383,61 +383,44 @@ if [ $argEND -ge $argSTART ]; then
       case ${v} in
          dimmer )
            dimmerSpecified=true
-           optionUnderstood=true
          ;;
          light )
            lightSpecified=true
-           optionUnderstood=true
          ;;
          fan )
            fanSpecified=true
-           optionUnderstood=true
          ;;
          fanTimer )
            fanTimerSpecified=true
-           optionUnderstood=true
          ;;
          lightTimer )
            lightTimerSpecified=true
-           optionUnderstood=true
          ;;
-         * )
+         token* )
             #
             # See if the option starts with a "token"
             #
-            first5=${v:0:5}
-            if [ "$first5" = token ]; then
-               length=$((${#v} - 6))
-               bondToken="${v:6:$length}"
-               optionUnderstood=true
-            fi
+            bondToken="${v:6}"
+         ;;
+         device* )
             #
             # See if the option starts with a "device" for bond device         
             #
-            first6=${v:0:6}
-            if [ "$first6" = device ]; then
-               length=$((${#v} - 7))
-               bondDevice="${v:7:$length}"
-               optionUnderstood=true
-            fi
+            bondDevice="${v:7}"
+         ;;
+         fanDevice* )
             #
             # See if the option starts with a "fanDevice": associated device        
             #
-            first9=${v:0:9}
-            if [ "$first9" = fanDevice ]; then
-               length=$((${#v} - 10))
-               fanDevice="${v:10:$length}"
-               optionUnderstood=true
-            fi
+            fanDevice="${v:10}"
+         ;;
+         lightDevice* )
             #
             # See if the option starts with a "lightDevice": associated device        
             #
-            first11=${v:0:11}
-            if [ "$first11" = lightDevice ]; then
-               length=$((${#v} - 12))
-               lightDevice="${v:12:$length}"
-               optionUnderstood=true
-            fi
+            lightDevice="${v:12}"
+         ;;
+         * )
             #
             # See if the option is in the format of an IP
             #
