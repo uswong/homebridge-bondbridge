@@ -9,11 +9,11 @@
    },
    "repository": {
       "type": "git",
-      "url": "https://github.com/uswong/homebridge-cmd4-bondbridge.git"
+      "url": "https://github.com/uswong/homebridge-bondbridge.git"
    },
-   "homepage": "https://github.com/uswong/homebridge-cmd4-bondbridge#readme",
+   "homepage": "https://github.com/uswong/homebridge-bondbridge#readme",
    "bugs": {
-      "url": "https://github.com/uswong/homebridge-cmd4-bondbridge/issues",
+      "url": "https://github.com/uswong/homebridge-bondbridge/issues",
       "email": "uswong@gmail.com"
    },
    "dependencies": {
