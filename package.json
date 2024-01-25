@@ -25,7 +25,6 @@
       "github-version-checker": ">=2.2.0",
       "latest-version": "^5.1.0",
       "moment": "*",
-      "homebridge-bondbridge": "^1.0.0",
       "path": "^0.12.7",
       "which": "^2.0.2"
    },
