@@ -5,18 +5,18 @@ module.exports =
 {
    default: function ( api )
    {
-     api.registerPlatform( "cmd4BondBridge", Cmd4BondBridge );
+     api.registerPlatform( "BondBridge", BondBridge );
    }
 }
 
 // Platform definition
-class Cmd4BondBridge
+class BondBridge
 {
    constructor( log, config, api )
    {
       this.log = log;
       this.api = api;
       this.config = config;
-      this.log.debug("cmd4BondBridge this.config %s", this.config);
+      this.log.debug("BondBridge this.config %s", this.config);
    }
 }

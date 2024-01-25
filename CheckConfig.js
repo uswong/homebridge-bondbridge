@@ -4,7 +4,7 @@ const commandExistsSync = require( "command-exists" ).sync;
 
 // Parse the args
 var args = process.argv.slice(2);
-const BONDBRIDGE_SH_PATH = args[0] || "/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh";
+const BONDBRIDGE_SH_PATH = args[0] || "/usr/local/lib/node_modules/homebridge-bondbridge/BondBridge.sh";
 const homebridgeConfigPath = args[1] || "/var/lib/homebridge/config.json";
 
 let listOfConstants = { };
@@ -54,7 +54,7 @@ function checkQueueTypesForQueue( queueTypes, queue )
    });
 }
 
-// Cmd4 has the ability to allow constants which could be used for the IP
+// MyPlace platform has the ability to allow constants which could be used for the IP
 function processConstants( constantsArgArray )
 {
    //
@@ -193,19 +193,19 @@ function updateConfigFirstTime( firstTime )
       return false;
    }
 
-   let cmd4BondBridgeConfig = this.config.platforms.find( platform => platform[ "Cmd4BondBridge" ] !== null );
+   let myPlaceBondBridgeConfig = this.config.platforms.find( platform => platform[ "BondBridge" ] !== null );
 
-   if ( cmd4BondBridgeConfig && cmd4BondBridgeConfig.debug )
+   if ( myPlaceBondBridgeConfig && myPlaceBondBridgeConfig.debug )
    {
-      console.log( `Setting debug for Cmd4BondBridge` );
-      debug = cmd4BondBridgeConfig.debug;
+      console.log( `Setting debug for BondBridge` );
+      debug = myPlaceBondBridgeConfig.debug;
    }
 
    return true;
 }
 
 
-// There is nothing really to differentiate a regular Cmd4 Accessory for that of
+// There is nothing really to differentiate a regular Accessory for that of
 // an Bond Bridge
 //
 function isAccessoryAbondBridge( accessory )
@@ -271,13 +271,13 @@ function checkInstallationButtonPressed( )
    // }
    //
    // Check #5B
-   // See if Cmd4 is installed from node_modules
+   // See if MyPlace is installed from node_modules
    //
-   // fileToFind = "/homebridge-cmd4/index.js";
-   // let cmd4Index = getGlobalNodeModulesPathForFile( fileToFind )
-   // if ( cmd4Index == null )
+   // fileToFind = "/homebridge-myplace/index.js";
+   // let myPlaceIndex = getGlobalNodeModulesPathForFile( fileToFind )
+   // if ( myPlaceIndex == null )
    // {
-   //    message( chalk.red( `ERROR: Cmd4 Plugin not installed` ) )
+   //    message( chalk.red( `ERROR: MyPlace Plugin not installed` ) )
    //    return;
    // }
 
@@ -285,7 +285,7 @@ function checkInstallationButtonPressed( )
    // Check #6
    // See if our BondBridge.sh script is present
    //
-   // Create the path to the cmd4MyAir.sh from node_modules
+   // Create the path to the BondBridge.sh from node_modules
    consoleLog( `Check #6` );
    let ourScript =  BONDBRIDGE_SH_PATH
    if ( ourScript == null )
@@ -294,9 +294,9 @@ function checkInstallationButtonPressed( )
       return;
    }
 
-   let cmd4AccessoriesFound = false;
+   let myPlaceAccessoriesFound = false;
    let bondbridgeAccessoriesFound = [];
-   let cmd4QueueTypesFound = [];
+   let myPlaceQueueTypesFound = [];
    let retVal = { };
    // Iterate over the elements in the array.
    // Note: DO NOT USE: forEach as javascript continues after a return!
@@ -309,13 +309,13 @@ function checkInstallationButtonPressed( )
 
       //
       // Check #7
-      // See if any Cmd4 accessories are defined in config.json
+      // See if any MyPlace accessories are defined in config.json
       //
       consoleLog( `Check #7` );
-      if ( entry.platform != "Cmd4" )
+      if ( entry.platform != "MyPlace" )
          continue;
 
-      cmd4AccessoriesFound = true;
+      myPlaceAccessoriesFound = true;
 
       //
       // Check #18
@@ -342,9 +342,9 @@ function checkInstallationButtonPressed( )
             let queueTypeEntry = entry.queueTypes[ queueTypesIndex ];
 
             // Need to append each one
-            retVal =  checkQueueTypesForQueue( cmd4QueueTypesFound, queueTypeEntry.queue );
+            retVal =  checkQueueTypesForQueue( myPlaceQueueTypesFound, queueTypeEntry.queue );
             if ( retVal.rc == true )
-            // if ( cmd4QueueTypesFound.find( queueTypeEntry ) )
+            // if ( myPlaceQueueTypesFound.find( queueTypeEntry ) )
             {
                //
                // Check #20
@@ -354,7 +354,7 @@ function checkInstallationButtonPressed( )
                message( chalk.red( `ERROR: Duplicate queue found: ${ queueTypeEntry.queue }` ) )
                return;
             }
-            cmd4QueueTypesFound.push( queueTypeEntry );
+            myPlaceQueueTypesFound.push( queueTypeEntry );
          }
       }
 
@@ -449,7 +449,7 @@ function checkInstallationButtonPressed( )
 
          //
          // Check #14
-         // See if the state_cmd does not match the cmd4BondBridge.sh
+         // See if the state_cmd does not match the BondBridge.sh
          //
          consoleLog( `Check #14` );
          if ( ! accessory.state_cmd.match( ourScript ) )
@@ -622,7 +622,7 @@ function checkInstallationButtonPressed( )
             return;
          }
 
-         retVal = checkQueueTypesForQueue( cmd4QueueTypesFound, accessory.queue );
+         retVal = checkQueueTypesForQueue( myPlaceQueueTypesFound, accessory.queue );
          // Check #23
          // queue must be defined in queueTypes
          consoleLog( `Check #23`);
@@ -646,12 +646,12 @@ function checkInstallationButtonPressed( )
 
    //
    // Check #32
-   // See if any Cmd4 accessories are defined in config.json
+   // See if any MyPlace accessories are defined in config.json
    //
    consoleLog( `Check #32`);
-   if ( cmd4AccessoriesFound == false )
+   if ( myPlaceAccessoriesFound == false )
    {
-      message( chalk.red( `ERROR: No Cmd4 Accessories found` ) )
+      message( chalk.red( `ERROR: No MyPlace Accessories found` ) )
       return;
    }
 
@@ -672,9 +672,9 @@ function checkInstallationButtonPressed( )
    // ( Most likely an earlier failure will succeed this one )
    //
    consoleLog( `Check #34`);
-   if ( cmd4QueueTypesFound == null )
+   if ( myPlaceQueueTypesFound == null )
    {
-      message( chalk.red( `ERROR: No Cmd4 Queue Types were defined for Bond Bridge Accessories` ) )
+      message( chalk.red( `ERROR: No MyPlace Queue Types were defined for Bond Bridge Accessories` ) )
       return;
    }
 

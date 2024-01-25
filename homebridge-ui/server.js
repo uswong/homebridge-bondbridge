@@ -14,8 +14,8 @@ class UiServer extends HomebridgePluginUiServer
    {
       super();
 
-      this.BONDBRIDGE_SH = "/homebridge-cmd4-bondbridge/BondBridge.sh";
-      this.CONFIGCREATOR_SH = "/homebridge-cmd4-bondbridge/ConfigCreator.sh";
+      this.BONDBRIDGE_SH = "/homebridge-bondbridge/BondBridge.sh";
+      this.CONFIGCREATOR_SH = "/homebridge-bondbridge/ConfigCreator.sh";
       this.listOfConstants = { };
 
       this.debug = false;
@@ -102,7 +102,7 @@ class UiServer extends HomebridgePluginUiServer
       });
    }
 
-   // Cmd4 has the ability to allow constants which could be used for the IP
+   // MyPlace platform has the ability to allow constants which could be used for the IP
    //
    processConstants( constantsArgArray )
    {
@@ -274,12 +274,12 @@ class UiServer extends HomebridgePluginUiServer
          return false;
       }
 
-      let cmd4BondBridgeConfig = this.config.platforms.find( platform => platform[ "cmd4BondBridge" ] !== null );
+      let BondBridgeConfig = this.config.platforms.find( platform => platform[ "BondBridge" ] !== null );
 
-      if ( cmd4BondBridgeConfig && cmd4BondBridgeConfig.debug )
+      if ( BondBridgeConfig && BondBridgeConfig.debug )
       {
-         console.log( `Setting debug for Cmd4BondBridge` );
-         this.debug = cmd4BondBridgeConfig.debug;
+         console.log( `Setting debug for platform BondBridge` );
+         this.debug = BondBridgeConfig.debug;
       }
 
       if ( this.debug )
@@ -289,7 +289,7 @@ class UiServer extends HomebridgePluginUiServer
    }
 
 
-   // There is nothing really to differentiate a regular Cmd4 Accessory for that of
+   // There is nothing really to differentiate a regular Accessory for that of
    // a Bond Bridge device 
    //
    isAccessoryAbondbridge( accessory )
@@ -372,18 +372,18 @@ class UiServer extends HomebridgePluginUiServer
       }
       //
       // Check #5B
-      // See if Cmd4 is installed from node_modules
+      // See if MyPlace is installed from node_modules
       //
-      fileToFind = "/homebridge-cmd4/index.js";
-      let cmd4Index = this.getGlobalNodeModulesPathForFile( fileToFind )
-      if ( cmd4Index == null )
+      fileToFind = "/homebridge-myplace/index.js";
+      let myPlaceIndex = this.getGlobalNodeModulesPathForFile( fileToFind )
+      if ( myPlaceIndex == null )
       {
          if ( this.debug )
-            console.log( `Server.js returning false cmd4Index <Your Global node_modules Path>${ fileToFind }` );
+            console.log( `Server.js returning false myPlaceIndex <Your Global node_modules Path>${ fileToFind }` );
 
          this.advError(
          { "rc": false,
-           "message": `Cmd4 Plugin not installed`
+           "message": `MyPlace Plugin not installed`
          });
          return;
       }
@@ -406,9 +406,9 @@ class UiServer extends HomebridgePluginUiServer
          return;
       }
 
-      let cmd4AccessoriesFound = false;
+      let myPlaceAccessoriesFound = false;
       let bondBridgeAccessoriesFound = [];
-      let cmd4QueueTypesFound = [];
+      let myPlaceQueueTypesFound = [];
       let retVal = { };
       // Iterate over the elements in the array.
       // Note: DO NOT USE: forEach as javascript continues after a return!
@@ -421,12 +421,12 @@ class UiServer extends HomebridgePluginUiServer
 
          //
          // Check #7
-         // See if any Cmd4 accessories are defined in config.json
+         // See if any MyPlace accessories are defined in config.json
          //
-         if ( entry.platform != "Cmd4" )
+         if ( entry.platform != "MyPlace" )
             continue;
 
-         cmd4AccessoriesFound = true;
+         myPlaceAccessoriesFound = true;
 
          //
          // Check #18
@@ -456,9 +456,9 @@ class UiServer extends HomebridgePluginUiServer
                let queueTypeEntry = entry.queueTypes[ queueTypesIndex ];
 
                // Need to append each one
-               retVal =  this.checkQueueTypesForQueue( cmd4QueueTypesFound, queueTypeEntry.queue );
+               retVal =  this.checkQueueTypesForQueue( myPlaceQueueTypesFound, queueTypeEntry.queue );
                if ( retVal.rc == true )
-               // if ( cmd4QueueTypesFound.find( queueTypeEntry ) )
+               // if ( myPlaceQueueTypesFound.find( queueTypeEntry ) )
                {
                   //
                   // Check #20
@@ -470,7 +470,7 @@ class UiServer extends HomebridgePluginUiServer
                   });
                   return;
                }
-               cmd4QueueTypesFound.push( queueTypeEntry );
+               myPlaceQueueTypesFound.push( queueTypeEntry );
             }
          }
 
@@ -571,7 +571,7 @@ class UiServer extends HomebridgePluginUiServer
 
             //
             // Check #14
-            // See if the state_cmd does not match the cmd4BondBridge.sh
+            // See if the state_cmd does not match the BondBridge.sh
             //
             if ( ! accessory.state_cmd.match( ourScript ) )
             {
@@ -761,7 +761,7 @@ class UiServer extends HomebridgePluginUiServer
                return;
             }
 
-            retVal = this.checkQueueTypesForQueue( cmd4QueueTypesFound, accessory.queue );
+            retVal = this.checkQueueTypesForQueue( myPlaceQueueTypesFound, accessory.queue );
             // Check #23
             // queue must be defined in queueTypes
             if ( retVal.rc == false )
@@ -795,16 +795,16 @@ class UiServer extends HomebridgePluginUiServer
 
       //
       // Check #32
-      // See if any Cmd4 accessories are defined in config.json
+      // See if any MyPlace accessories are defined in config.json
       //
-      if ( cmd4AccessoriesFound == false )
+      if ( myPlaceAccessoriesFound == false )
       {
          if ( this.debug )
-            console.log( `Server.js returning false noCmd4Accessories` );
+            console.log( `Server.js returning false no MyPlace Accessories` );
 
          this.advError(
          { "rc": false,
-           "message": `No Cmd4 Accessories found`
+           "message": `No MyPlace Accessories found`
          });
          return;
       }
@@ -830,21 +830,21 @@ class UiServer extends HomebridgePluginUiServer
       // See if any queueTypes were defined
       // ( Most likely an earlier failure will succeed this one )
       //
-      if ( cmd4QueueTypesFound == null )
+      if ( myPlaceQueueTypesFound == null )
       {
          if ( this.debug )
-            console.log( `Server.js returning false no Cmd4 Queue types defined` );
+            console.log( `Server.js returning false no MyPlace Queue types defined` );
 
          this.advError(
          { "rc": false,
-           "message": `No Cmd4 Queue Types were defined for BondBridge Accessories`
+           "message": `No MyPlace Queue Types were defined for BondBridge Accessories`
          });
          return;
       }
 
       if ( this.debug )
       {
-         console.log( chalk.red( `Remember to remove the "Cmd4BondBridge" debug entry from your config.json when done.` ) );
+         console.log( chalk.red( `Remember to remove the "BondBridge" debug entry from your config.json when done.` ) );
       }
 
       // PASS !
