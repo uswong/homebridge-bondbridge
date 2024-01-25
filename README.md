@@ -1,9 +1,9 @@
-# homebridge-cmd4-bondbridge
+# homebridge-bondbridge
 For ceiling fans fitted with **Hunter Pacific LOGIC remote control** or **equivalent** via **Bond Bridge RF Controller**
 
 ## Introduction
 
-This `homebridge-cmd4-bondbridge` plugin is specially designed to control ceiling fans fitted with **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below) or **equivalent** via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)** (right image below).
+This `homebridge-bondbridge` plugin is specially designed to control ceiling fans fitted with **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below) or **equivalent** via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)** (right image below).
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
@@ -26,10 +26,10 @@ This plugin does not use the built-in timers but use custom-built timers within 
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
-2. Install the `homebridge-cmd4` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
+2. Install the `homebridge-myplace` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
      
-     Note: `homebridge-cmd4` plug-in is essential because the `homebridge-cmd4-bondbridge` plug-in is dependent on it.
-3. Install `homebridge-cmd4-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
+     Note: `homebridge-myplace` plug-in is essential because the `homebridge-bondbridge` plug-in is dependent on it.
+3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
 4. If you have not already, install  <B>jq</B> and <B>curl</B> via your terminal or Homebridge UI terminal or through ssh: 
 
 
@@ -61,9 +61,9 @@ A configuration file is required to run this plugin and it can be generated auto
 
 (A) Homebridge users with access to the Homebridge web UI can follow the steps below to run the script:
 
-1. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed `homebridge-cmd4-bondbridge`. Click `SETTINGS` and it should launch the **'Homebridge Cmd4 BondBridge'** setting dialogue page.
+1. Go to the 'Plugins' tab in Homebridge UI and locate your newly installed `homebridge-bondbridge`. Click `SETTINGS` and it should launch the **'Homebridge BondBridge'** setting dialogue page.
 2. Scroll down to the **'Bond Bridge Device Settings'** area and fill out the `IP Address` and `Local Token` of your Bond Bridge device (if you have more than one Bond Bridge devices, you can click `Add new device` to setup the others), and then click `SAVE`. It will close the UI and you will need to open it once more as per Step 1.
-3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under `homebridge-cmd4` plugin.  You can have a look at this config by clicking `SETTING` of `homebridge-cmd4` plugin.
+3. Tick/untick the `"Setup"` and `"Timer"`checkboxes depending what you would like to have in Homekit, then press the `CONFIG CREATOR` button to create your Bond Bridge configuration file. This Bond Bridge configuration file created is stored under `homebridge-myplace` plugin.  You can have a look at this config by clicking `SETTING` of `homebridge-myplace` plugin.
 4. You may click `CHECK CONFIGURATION`to check the config created satisfies all requirements. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what it is that you have missed and need to fix.
 
      ![image](https://user-images.githubusercontent.com/96530237/227156412-c6ef8bb6-8cde-495b-9c1b-5b2e3b9c1603.png)
@@ -71,12 +71,12 @@ A configuration file is required to run this plugin and it can be generated auto
 (B) for users (e.g. HOOBS users) who do not have access to Homebridge UI will have to run the **ConfigCreator.sh** from your terminal.  Use the following terminal commands to locate and run the **ConfigCreator.sh** and follow the prompts: 
 
      cd
-     config=$(find /usr 2>&1 | grep -v find | grep "homebridge-cmd4-bondbridge/ConfigCreator.sh$")
+     config=$(find /usr 2>&1 | grep -v find | grep "homebridge-bondbridge/ConfigCreator.sh$")
      echo "${config}"
 
   if `echo "${config}"` returns nothing, try the following:
 
-     config=$(find /var/lib 2>&1 | grep -v find | grep "homebridge-cmd4-bondbridge/ConfigCreator.sh$")
+     config=$(find /var/lib 2>&1 | grep -v find | grep "homebridge-bondbridge/ConfigCreator.sh$")
 
   if `echo "${config}"` returns something then use the following command to run **ConfigCreator.sh**
 
@@ -96,6 +96,6 @@ The Timers are custom-built timers and used 'Lightbulb' accessory as a proxy and
 * Suggest Improvements and Features you would like to see!
 
 ## Special Thanks
-1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [homebridge-cmd4-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot on **bash** and **javascript** coding in homebridge environment.
+1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [homebridge--AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot on **bash** and **javascript** coding in homebridge environment.
 2. Many thanks also to [John Talbot](https://github.com/ztalbot2000) for his fantastic [homebridge-cmd4](https://github.com/mitch7391/homebridge-cmd4) plugin with which I can do wonderful things in Homekit.
 3. And never forget to thank my beautiful wife who has put up with my obsession on this.....
