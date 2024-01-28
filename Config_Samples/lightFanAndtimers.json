@@ -16,6 +16,11 @@
                     "characteristic": "rotationSpeed"
                 }
             ],
+            "props": {
+                "brightness": {
+                    "minStep": 14
+                }
+            },
             "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
             "state_cmd_suffix": "fan 'token:df60c5b500bcd518' 'device:0d3a13c2' ${BBIP}"
         },
@@ -37,6 +42,11 @@
                     "characteristic": "brightness"
                 }
             ],
+            "props": {
+                "brightness": {
+                    "minStep": 1
+                }
+            },
             "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
             "state_cmd_suffix": "fanTimer 'token:df60c5b500bcd518' 'device:2c31a3d0' 'fanDevice:0d3a13c2' ${BBIP}"
         },
@@ -58,6 +68,11 @@
                     "characteristic": "brightness"
                 }
             ],
+            "props": {
+                "brightness": {
+                    "minStep": 14
+                }
+            },
             "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
             "state_cmd_suffix": "light 'token:df60c5b500bcd518' 'device:406eb9b1' ${BBIP}"
         },
@@ -79,6 +94,11 @@
                     "characteristic": "brightness"
                 }
             ],
+            "props": {
+                "brightness": {
+                    "minStep": 1
+                }
+            },
             "state_cmd": "'/usr/local/lib/node_modules/homebridge-cmd4-bondbridge/BondBridge.sh'",
             "state_cmd_suffix": "lightTimer 'token:df60c5b500bcd518' 'device:1b9be604' 'lightDevice:406eb9b1' ${BBIP}"
         }
