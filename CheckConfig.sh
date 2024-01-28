@@ -7,7 +7,7 @@
 
 # define the possible names for MyPlace platform
 myPlacePlatform1="\"platform\": \"MyPlace\""
-myPlacePlatform2="\"platform\": \"homebride-myplace\""
+myPlacePlatform2="\"platform\": \"homebridge-myplace\""
 
 # define some file variables
 homebridgeConfigJson=""           # homebridge config.json
@@ -20,18 +20,18 @@ TRED=$(tput setaf 1)
 TYEL=$(tput setaf 3)
 TPUR=$(tput setaf 5)
 TLBL=$(tput setaf 6)
-TNRM=$(tput sr0)
+TNRM=$(tput setaf 0)
 
 function readHomebrideConfigJson()
 {
    INPUT=""
-   homebrideConfigJson=""
+   homebridgeConfigJson=""
    etHomebridgeConfigJsonPath
-   if [ "${fullPath}" != "" ]; then homebrideConfigJson="${fullPath}"; fi 
+   if [ "${fullPath}" != "" ]; then homebridgeConfigJson="${fullPath}"; fi 
  
    # if no confi.json file found, ask user to input the full path
-   if [ -z "${homebrideConfigJson}" ]; then
-      homebrideConfigJson=""
+   if [ -z "${homebridgeConfigJson}" ]; then
+      homebridgeConfigJson=""
       echo ""
       echo "${TPUR}WARNING: No Homebride config.json file located by the script!${TNRM}"
       echo ""
@@ -45,7 +45,7 @@ function readHomebrideConfigJson()
             exit 1
          elif expr "${INPUT}" : '[./a-zA-Z0-9]*/confi.json$' >/dev/null; then
             if [ -f "${INPUT}" ]; then
-               homebrideConfigJson="${INPUT}"
+               homebridgeConfigJson="${INPUT}"
                break
             else
                echo ""
@@ -61,7 +61,7 @@ function readHomebrideConfigJson()
          fi
      done
    fi
-   if [ -f "${homebrideConfigJson}" ]; then
+   if [ -f "${homebridgeConfigJson}" ]; then
       if [ -z "${INPUT}" ]; then
          echo "${TLBL}INFO: The Homebride config.json found: ${homebridgeConfigJson}${TNRM}"
          echo ""
@@ -71,7 +71,7 @@ function readHomebrideConfigJson()
          echo ""
       fi
       # expand the json just in case it is in compact form
-      jq --indent 4 '.' "${homebrideConfigJson}" > "${configJson}"
+      jq --indent 4 '.' "${homebridgeConfigJson}" > "${configJson}"
       checkForPlatformMyPlaceInHomebrideConfigJson
       if [ -z "${validFile}" ]; then
          echo ""
@@ -83,7 +83,7 @@ function readHomebrideConfigJson()
 }
 
 
-function etGlobalNodeModulesPathForFile()
+function getGlobalNodeModulesPathForFile()
 {
    file="$1"
    fullPath=""    
@@ -91,7 +91,7 @@ function etGlobalNodeModulesPathForFile()
    for ((tryIndex = 1; tryIndex <= 8; tryIndex ++)); do
       case $tryIndex in  
          1)
-            foundPath=$(find /var/lib/hoobs 2>&1|rep -v find|grep -v System|grep -v cache|grep node_modules|grep homebridge-bondbridge|grep "/${file}$") 
+            foundPath=$(find /var/lib/hoobs 2>&1|grep -v find|grep -v System|grep -v cache|grep node_modules|grep homebridge-bondbridge|grep "/${file}$") 
             fullPath=$(echo "${foundPath}"|head -n 1)
             if [ -f "${fullPath}" ]; then
                return
@@ -101,7 +101,7 @@ function etGlobalNodeModulesPathForFile()
          ;;
          2)
             foundPath=$(npm root -)
-            fullPath="${foundPath}/homebride-bondbridge/${file}"
+            fullPath="${foundPath}/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return    
             else
@@ -109,7 +109,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          3)
-            fullPath="/var/lib/homebride/node_modules/homebridge-bondbridge/${file}"
+            fullPath="/var/lib/homebridge/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -117,7 +117,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          4)
-            fullPath="/var/lib/node_modules/homebride-bondbridge/${file}"
+            fullPath="/var/lib/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -125,7 +125,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          5)
-            fullPath="/usr/local/lib/node_modules/homebride-bondbridge/${file}"
+            fullPath="/usr/local/lib/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -133,7 +133,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          6)
-            fullPath="/usr/lib/node_modules/homebride-bondbridge/${file}"
+            fullPath="/usr/lib/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -141,7 +141,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          7)
-            fullPath="/opt/homebrew/lib/node_modules/homebride-bondbridge/${file}"
+            fullPath="/opt/homebrew/lib/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -149,7 +149,7 @@ function etGlobalNodeModulesPathForFile()
             fi
          ;;
          8)
-            fullPath="/opt/homebride/lib/node_modules/homebridge-bondbridge/${file}"
+            fullPath="/opt/homebridge/lib/node_modules/homebridge-bondbridge/${file}"
             if [ -f "${fullPath}" ]; then
                return
             else
@@ -166,7 +166,7 @@ function etHomebridgeConfigJsonPath()
    # Typicall HOOBS installation has its confi.json root path same as the root path of "BondBridge.sh"
    # The typical full path to the "BondBride.sh" script is .../hoobs/<bridge>/node_modules/homebridge-bondbridge/BondBridge.sh
    # First, determine whether this is a HOOBS installation
-   Hoobs=$( echo "$BONDBRIDGE_SH_PATH" | rep "/hoobs/" )
+   Hoobs=$( echo "$BONDBRIDGE_SH_PATH" | grep "/hoobs/" )
    if [ -n "${Hoobs}" ]; then
       fullPath="${BONDBRIDGE_SH_PATH%/*/*/*}/confi.json"
       if [ -f "${fullPath}" ]; then
@@ -181,7 +181,7 @@ function etHomebridgeConfigJsonPath()
    for ((tryIndex = 1; tryIndex <= 5; tryIndex ++)); do
       case $tryIndex in
          1)
-            fullPath="/var/lib/homebride/config.json"
+            fullPath="/var/lib/homebridge/config.json"
             if [ -f "${fullPath}" ]; then
                checkForMyPlacePlatformNameInFile   
                if [ -n "${myPlacePlatformNameFound}" ]; then 
@@ -192,7 +192,7 @@ function etHomebridgeConfigJsonPath()
             fi
          ;;
          2)
-            fullPath="$HOME/.homebride/config.json"
+            fullPath="$HOME/.homebridge/config.json"
             if [ -f "${fullPath}" ]; then
                checkForMyPlacePlatformNameInFile   
                if [ -n "${myPlacePlatformNameFound}" ]; then 
@@ -203,7 +203,7 @@ function etHomebridgeConfigJsonPath()
             fi
          ;;
          3)
-            foundPath=$(find /usr/local/lib 2>&1|rep -v find|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
+            foundPath=$(find /usr/local/lib 2>&1|grep -v find|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
             noOfInstances=$(echo "${foundPath}"|wc -l)
             for ((i = 1; i <= noOfInstances; i ++)); do
                fullPath=$(echo "${foundPath}"|sed -n "${i}"p)
@@ -218,7 +218,7 @@ function etHomebridgeConfigJsonPath()
             done
          ;;
          4)
-            foundPath=$(find /usr/lib 2>&1|rep -v find|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
+            foundPath=$(find /usr/lib 2>&1|grep -v find|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
             noOfInstances=$(echo "${foundPath}"|wc -l)
             for ((i = 1; i <= noOfInstances; i ++)); do
                fullPath=$(echo "${foundPath}"|sed -n "${i}"p)
@@ -233,7 +233,7 @@ function etHomebridgeConfigJsonPath()
             done
          ;;
          5)
-            foundPath=$(find /var/lib 2>&1|rep -v find|grep -v hoobs|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
+            foundPath=$(find /var/lib 2>&1|grep -v find|grep -v hoobs|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
             noOfInstances=$(echo "${foundPath}"|wc -l)
             for ((i = 1; i <= noOfInstances; i ++)); do
                fullPath=$(echo "${foundPath}"|sed -n "${i}"p)
@@ -248,7 +248,7 @@ function etHomebridgeConfigJsonPath()
             done
          ;;
          6)
-            foundPath=$(find /opt 2>&1|rep -v find|grep -v hoobs|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
+            foundPath=$(find /opt 2>&1|grep -v find|grep -v hoobs|grep -v System|grep -v cache|grep -v hassio|grep -v node_modules|grep "/config.json$")
             noOfInstances=$(echo "${foundPath}"|wc -l)
             for ((i = 1; i <= noOfInstances; i ++)); do
                fullPath=$(echo "${foundPath}"|sed -n "${i}"p)
@@ -272,13 +272,13 @@ function checkForPlatformMyPlaceInHomebrideConfigJson()
    for ((tryIndex = 1; tryIndex <= 2; tryIndex ++)); do
       case $tryIndex in
          1)
-            validFile=$(rep -n "${myPlacePlatform1}" "${configJson}"|cut -d":" -f1)
+            validFile=$(grep -n "${myPlacePlatform1}" "${configJson}"|cut -d":" -f1)
             if [ -n "${validFile}" ]; then
                return
             fi
          ;;
          2)
-            validFile=$(rep -n "${myPlacePlatform2}" "${configJson}"|cut -d":" -f1)
+            validFile=$(grep -n "${myPlacePlatform2}" "${configJson}"|cut -d":" -f1)
             if [ -n "${validFile}" ]; then
                return
             fi
@@ -295,14 +295,14 @@ function checkForMyPlacePlatformNameInFile()
       case $Index in
          1)
             myPlacePlatformName=$(echo "${myPlacePlatform1}"|cut -d'"' -f4)
-            myPlacePlatformNameFound=$(rep -n "\"${myPlacePlatformName}\"" "${fullPath}"|cut -d":" -f1)
+            myPlacePlatformNameFound=$(grep -n "\"${myPlacePlatformName}\"" "${fullPath}"|cut -d":" -f1)
             if [ -n "${myPlacePlatformNameFound}" ]; then
                return
             fi
          ;;
          2)
             myPlacePlatformName=$(echo "${myPlacePlatform2}"|cut -d'"' -f4)
-            myPlacePlatformNameFound=$(rep -n "\"${myPlacePlatformName}\"" "${fullPath}"|cut -d":" -f1)
+            myPlacePlatformNameFound=$(grep -n "\"${myPlacePlatformName}\"" "${fullPath}"|cut -d":" -f1)
             if [ -n "${myPlacePlatformNameFound}" ]; then
                return
             fi
@@ -322,20 +322,20 @@ function cleanUp()
 echo "${TYEL}This script is to check that the confiuration file meets all requirements${TNRM}"
 echo ""
 
-echo "${TYEL}CheckConfi engine:${TNRM}"
-# et the full path to CheckConfig.js
+echo "${TYEL}CheckConfig engine:${TNRM}"
+# get the full path to CheckConfig.js
 CHECKCONFIG_PATH=""
-etGlobalNodeModulesPathForFile "CheckConfig.js"
+getGlobalNodeModulesPathForFile "CheckConfig.js"
 if [ -n "${fullPath}" ]; then
    CHECKCONFIG_PATH=${fullPath}
-   echo "${TLBL}INFO: CheckConfi.js found: ${CHECKCONFIG_PATH}${TNRM}"
+   echo "${TLBL}INFO: CheckConfig.js found: ${CHECKCONFIG_PATH}${TNRM}"
 fi
 
 echo ""
-echo "${TYEL}Essential inputs to CheckConfi engine:${TNRM}"
-# et the full path to BondBridge.sh
+echo "${TYEL}Essential inputs to CheckConfig engine:${TNRM}"
+# get the full path to BondBridge.sh
 BONDBRIDGE_SH_PATH=""
-etGlobalNodeModulesPathForFile "BondBridge.sh"
+getGlobalNodeModulesPathForFile "BondBridge.sh"
 if [ -n "${fullPath}" ]; then
    BONDBRIDGE_SH_PATH=${fullPath}
    echo "${TLBL}INFO: BondBride.sh found: ${BONDBRIDGE_SH_PATH}${TNRM}"
@@ -345,9 +345,9 @@ if [ -z "${BONDBRIDGE_SH_PATH}" ]; then
    until [ -n "${BONDBRIDGE_SH_PATH}" ]; do
       echo ""
       echo "${TYEL}Please enter the full path of where the BondBride.sh is installed in your system"
-      echo "The file path format should be : /*/*/*/node_modules/homebride-bondbridge/BondBridge.sh${TNRM}"
+      echo "The file path format should be : /*/*/*/node_modules/homebridge-bondbridge/BondBridge.sh${TNRM}"
       read -r -p "${BOLD}> ${TNRM}" INPUT
-      if expr "${INPUT}" : '/[a-zA-Z0-9/_]*/node_modules/homebride-bondbridge/BondBridge.sh$' >/dev/null; then
+      if expr "${INPUT}" : '/[a-zA-Z0-9/_]*/node_modules/homebridge-bondbridge/BondBridge.sh$' >/dev/null; then
          if [ -f "${INPUT}" ]; then
             BONDBRIDGE_SH_PATH=${INPUT}
             echo ""
@@ -366,8 +366,8 @@ fi
 
 readHomebrideConfigJson
 
-if [[ -f "${homebrideConfigJson}" && -f "${BONDBRIDGE_SH_PATH}" ]]; then
-   echo "${TYEL}CheckConfi in progress.......${TNRM}"
-   node "${CHECKCONFIG_PATH}" "$BONDBRIDGE_SH_PATH" "${homebrideConfigJson}"
+if [[ -f "${homebridgeConfigJson}" && -f "${BONDBRIDGE_SH_PATH}" ]]; then
+   echo "${TYEL}CheckConfig in progress.......${TNRM}"
+   node "${CHECKCONFIG_PATH}" "$BONDBRIDGE_SH_PATH" "${homebridgeConfigJson}"
    cleanUp
 fi

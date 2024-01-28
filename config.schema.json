@@ -1,5 +1,5 @@
 {
-   "pluginAlias": "cmd4BondBridge",
+   "pluginAlias": "BondBridge",
    "pluginType": "platform",
    "singular": true,
    "customUi": true,
@@ -10,7 +10,7 @@
          "name": {
            "title": "Name",
            "type": "string",
-           "default": "cmd4BondBridge",
+           "default": "BondBridge",
            "required": true
          },
          "devices": {
@@ -33,6 +33,20 @@
                      "type": "string",
                      "required": true,
                      "placeholder": ""
+                  },
+                  "fullsetup": {
+                     "title": "Full Setup",
+                     "description": "Include a Fan/SpeedControl and a Light/Dimmer, otherwise a Light Dimmer only.",
+                     "type": "boolean",
+                     "required": false,
+                     "default": false
+                  },
+                  "timerSetup": {
+                     "title": "Include Timers",
+                     "description": "Include a Fan timer and a Light timer, otherwise no timers.",
+                     "type": "boolean",
+                     "required": false,
+                     "default": false
                   },
                   "debug": {
                      "title": "Enable detailed debug log",
@@ -62,6 +76,8 @@
       "items": [
          "devices[].ipAddress",
          "devices[].token",
+         "devices[].fullsetup",
+         "devices[].timerSetup",
          "devices[].debug"
          ]
       }

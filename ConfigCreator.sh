@@ -25,18 +25,25 @@
 #
 UIversion="customUI"
 
-BBIP="$1"
-BBtoken="$2"
-BBdebug="$3"
-BBIP2="$4"
-BBtoken2="$5"
-BBdebug2="$6"
-BBIP3="$7"
-BBtoken3="$8"
-BBdebug3="$9"
-fullSetup="${10}"
-timerSetup="${11}"
-BONDBRIDGE_SH_PATH="${12}"
+BBIP="${1}"
+BBtoken="${2}"
+fullSetup="${3}"
+timerSetup="${4}"
+BBdebug="${5}"
+BBIP2="${6}"
+BBtoken2="${7}"
+fullSetup2="${8}"
+timerSetup2="${9}"
+BBdebug2="${10}"
+BBIP3="${11}"
+BBtoken3="${12}"
+fullSetup3="${13}"
+timerSetup3="${14}"
+BBdebug3="${15}"
+BONDBRIDGE_SH_PATH="${16}"
+
+#echo "ERROR: fullSetup=${fullSetup}, timerSetup=${timerSetup}"
+#exit 0
 
 # define the possible names for MyPlace platform
 myPlacePlatform=""
@@ -166,6 +173,11 @@ function myPlaceFan()
      echo "                    \"characteristic\": \"rotationSpeed\""
      echo "                }"
      echo "            ],"
+     echo "            \"props\": {"
+     echo "                \"rotationSpeed\": {"
+     echo "                    \"minStep\": 25"
+     echo "                }"
+     echo "            },"
      echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
      echo "            \"state_cmd_suffix\": \"fan 'token:${bondToken}' 'device:${device}' ${ip}\""
      echo "        },"
@@ -194,6 +206,11 @@ function myPlaceLightbulb()
      echo "                    \"characteristic\": \"brightness\""
      echo "                }"
      echo "            ],"
+     echo "            \"props\": {"
+     echo "                \"brightness\": {"
+     echo "                    \"minStep\": 14"
+     echo "                }"
+     echo "            },"
      echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
      echo "            \"state_cmd_suffix\": \"${accType} 'token:${bondToken}' 'device:${device}' ${ip}\""
      echo "        },"
@@ -224,6 +241,11 @@ function myPlaceTimerLightbulb()
      echo "                    \"characteristic\": \"brightness\""
      echo "                }"
      echo "            ],"
+     echo "            \"props\": {"
+     echo "                \"brightness\": {"
+     echo "                    \"minStep\": 1"
+     echo "                }"
+     echo "            },"
      echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
      echo "            \"state_cmd_suffix\": \"${accType} 'token:${bondToken}' 'device:${timerDevice}' '${deviceType}:${device}' ${ip}\""
      echo "        },"
@@ -847,6 +869,12 @@ case $UIversion in
             BBIP="${INPUT}"
             read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
             BBtoken="${INPUT}"
+            fullSetup="lightDimmer"
+            read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then fullSetup="fullSetup"; fi
+            timerSetup="noTimers"
+            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup="includeTimers"; fi
             BBdebug="false"
             read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
             if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug="true"; fi
@@ -867,6 +895,12 @@ case $UIversion in
             BBIP2="${INPUT}"
             read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
             BBtoken2="${INPUT}"
+            fullSetup2="lightDimmer"
+            read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then fullSetup2="fullSetup"; fi
+            timerSetup2="noTimers"
+            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup2="includeTimers"; fi
             BBdebug2="false"
             read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
             if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug2="true"; fi
@@ -888,6 +922,12 @@ case $UIversion in
                BBIP3="${INPUT}"
                read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
                BBtoken3="${INPUT}"
+               fullSetup3="lightDimmer"
+               read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
+               if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then fullSetup3="fullSetup"; fi
+               timerSetup3="noTimers"
+               read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+               if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup3="includeTimers"; fi
                BBdebug3="false"
                read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
                if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug3="true"; fi
@@ -900,22 +940,9 @@ case $UIversion in
       fi
 
       echo ""
-      read -r -p "${TYEL}Include a Fan and a Light? n=a Light Dimmer only (y/n, default=n):${TNRM} " INPUT
-      if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" ]]; then
-         fullSetup="fullSetup"
-      else
-         fullSetup="lightDimmer only"
-      fi
-
-      read -r -p "${TYEL}Include timers to turn-on/off the fan and light? (y/n, default=y):${TNRM} " INPUT
-      if [[ "${INPUT}" = "n" || "${INPUT}" = "N" ]]; then
-         timerSetup="noTimers"
-      else
-         timerSetup="includeTimers"
-      fi
-      echo ""
-      echo "${TLBL}INFO: fullSetup=${fullSetup}${TNRM}"
-      echo "${TLBL}INFO: timerSetup=${timerSetup}${TNRM}"
+      echo "${TLBL}INFO: (1) ip1:${BBIP}, token1:${BBtoken},${fullSetup}, ${timerSetup}${TNRM}"
+      if [ -n "${BBIP2}" ]; then echo "${TLBL}INFO: (2) ip2:${BBIP2}, token2:${BBtoken2}, ${fullSetup2}, ${timerSetup2}${TNRM}"; fi
+      if [ -n "${BBIP3}" ]; then echo "${TLBL}INFO: (3) ip3:${BBIP3}, token3:${BBtoken3}, ${fullSetup3}, ${timerSetup3}${TNRM}"; fi
       echo ""
 
       # get the full path to BondBridge.sh
@@ -952,7 +979,7 @@ case $UIversion in
    ;;
 esac
 
-if [ -n "${BBIP}" ]; then noOfBondBridges=1; fi
+noOfBondBridges=1
 if [ -n "${BBIP2}" ]; then noOfBondBridges=2; fi
 if [ -n "${BBIP3}" ]; then noOfBondBridges=3; fi
 
@@ -969,6 +996,8 @@ for ((n=1; n<=noOfBondBridges; n++)); do
       ip="\${BBIP2}"
       IPA="${BBIP2}"
       bondToken="${BBtoken2}"
+      fullSetup="${fullSetup2}"
+      timerSetup="${timerSetup2}"
       debug="${BBdebug2}"
       queue="BBB"
    fi
@@ -976,6 +1005,8 @@ for ((n=1; n<=noOfBondBridges; n++)); do
       ip="\${BBIP3}"
       IPA="${BBIP3}"
       bondToken="${BBtoken3}"
+      fullSetup="${fullSetup3}"
+      timerSetup="${timerSetup3}"
       debug="${BBdebug3}"
       queue="BBC"
    fi
