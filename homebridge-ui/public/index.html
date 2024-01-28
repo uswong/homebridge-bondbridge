@@ -1,30 +1,11 @@
 <link rel="stylesheet" href="css/style.css">
 <div class="card card-body">
   <img src="images/BondBridge.png" alt="Bond Bridge" width="150px" class="center-it cmd4Logo">
-  <h5 class="text-center"><b style="font-weight: 600;">Bond Bridge Configuration Creator</b></h5>
+  <h5 class="text-center"><b style="font-weight: 600;">Bond Bridge Configuration Creator and Checker</b></h5>
   <h6 class="text-center">This script will create and augment the MyPlace configuration file for Bond Bridge devices</h6>
   <div class="text-center">
-    <button id="ConfigCreatorButton" type="button" class="btn btn-primary">Config Creator</button>
-  </div>
-  <div>
-    <input type="checkbox" id="fullSetup"> FullSetup: include a Fan/SpeedControl and a Light/Dimmer, otherwise a Light Dimmer only.
-  </div>
-  <div>
-    <input type="checkbox" id="timerSetup" checked> Timers: include a Fan timer and a Light timer, otherwise no timers.
-  </div>
-  <div class="form-group">
-    <label for="feedbackOutput">Feedback messages from ConfigCreator (read only):</label>
-    <input type="text" class="form-control" id="feedbackOutput" readonly>
-  </div>
-</div>
-
-<div id="main" class="card card-body pb-5">
-
-  <!-- start -->
-  <div id="start">
-    <h5 class="text-center"> <b style="font-weight: 600;">Bond Bridge Configuration Check</b></h5>
-    <h6 class="text-center">This will check your Bond Bridge configuration file for any errors </h6>
-    <button id="checkInstallationButton" type="submit" class="btn btn-primary center-it mt-3">Check Configuration</button>
+    <button id="ConfigCreatorButton" type="button" class="btn btn-blue">Create Configuration</button>
+    <button id="checkInstallationButton" type="submit" class="btn btn-green">Check Configuration</button>
   </div>
 </div>
 
@@ -74,32 +55,48 @@
 
     BBIP = "";
     BBtoken = "";
+    BBfullSetup = "false";
+    BBtimerSetup = "false";
     BBdebug = "false";
     BBIP2 = "";
     BBtoken2 = "";
+    BBfullSetup2 = "false";
+    BBtimerSetup2 = "false";
     BBdebug2 = "false";
     BBIP3 = "";
     BBtoken3 = "";
+    BBfullSetup3 = "false";
+    BBtimerSetup3 = "false";
     BBdebug3 = "false";
     feedback = "";
     var fullSetup;
     var timerSetup;
+    var fullSetup2;
+    var timerSetup2;
+    var fullSetup3;
+    var timerSetup3;
 
     // get the intial from the config and add it to the form
     if (pluginConfig.length) {
       if (pluginConfig[0].devices.length >= 1) {
         BBIP = pluginConfig[0].devices[0].ipAddress;
         BBtoken = pluginConfig[0].devices[0].token;
+        BBfullSetup = pluginConfig[0].devices[0].fullSetup;
+        BBtimerSetup = pluginConfig[0].devices[0].timerSetup;
         BBdebug = pluginConfig[0].devices[0].debug;
       }
       if (pluginConfig[0].devices.length >= 2) {
         BBIP2 = pluginConfig[0].devices[1].ipAddress;
         BBtoken2 = pluginConfig[0].devices[1].token;
+        BBfullSetup2 = pluginConfig[0].devices[1].fullSetup;
+        BBtimerSetup2 = pluginConfig[0].devices[1].timerSetup;
         BBdebug2 = pluginConfig[0].devices[1].debug;
       }
       if (pluginConfig[0].devices.length >= 3) {
         BBIP3 = pluginConfig[0].devices[2].ipAddress;
         BBtoken3 = pluginConfig[0].devices[2].token;
+        BBfullSetup3 = pluginConfig[0].devices[2].fullSetup;
+        BBtimerSetup3 = pluginConfig[0].devices[2].timerSetup;
         BBdebug3 = pluginConfig[0].devices[2].debug;
       }
     }
@@ -119,20 +116,38 @@
         return;
       }
 
-      if (document.getElementById("fullSetup").checked == true) {
+      if ( BBfullSetup ) {
          fullSetup = "fullSetup";
       } else {
          fullSetup = "lightDimmer";
       }
-      if (document.getElementById("timerSetup").checked == true) {
+      if ( BBtimerSetup ) {
          timerSetup = "includeTimers";
-         document.querySelector('#feedbackOutput').value = fullSetup + " and " + timerSetup;
       } else {
          timerSetup = "noTimers";
-         document.querySelector('#feedbackOutput').value = fullSetup + " but " + timerSetup;
       }
 
+      if ( BBfullSetup2 ) {
+         fullSetup2 = "fullSetup";
+      } else {
+         fullSetup2 = "lightDimmer";
+      }
+      if ( BBtimerSetup2 ) {
+         timerSetup2 = "includeTimers";
+      } else {
+         timerSetup2 = "noTimers";
+      }
 
+      if ( BBfullSetup3 ) {
+         fullSetup3 = "fullSetup";
+      } else {
+         fullSetup3 = "lightDimmer";
+      }
+      if ( BBtimerSetup3 ) {
+         timerSetup3 = "includeTimers";
+      } else {
+         timerSetup3 = "noTimers";
+      }
 
       // starting the request, show the loading spinner
       homebridge.showSpinner();
@@ -140,32 +155,37 @@
       // request key paths from the server
       if(pluginConfig[0].devices.length === 1) {
          homebridge.toast.info(`This may take up to 1 minute to process!`, 'Info');
+         homebridge.toast.info(`(1) ${fullSetup} ${timerSetup}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 2) {
          homebridge.toast.info(`This may take up to 2 minutes to process!`, 'Info');
+         homebridge.toast.info(`(1) ${fullSetup} ${timerSetup}, (2) ${fullSetup2} ${timerSetup2}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 3) {
          homebridge.toast.info(`This may take up to 3 minutes to process!`, 'Info');
+         homebridge.toast.info(`(1) ${fullSetup} ${timerSetup}, (2) ${fullSetup2} ${timerSetup2}, (3) ${fullSetup3} ${timerSetup3}.`, 'Setup Info');
       }
+
 
       try {
         const response = await homebridge.request('/configcreator', {
           ip: BBIP,
           token: BBtoken,
+          fullSetup: fullSetup,
+          timerSetup: timerSetup,
           debug: BBdebug,
           ip2: BBIP2,
           token2: BBtoken2,
+          fullSetup2: fullSetup2,
+          timerSetup2: timerSetup2,
           debug2: BBdebug2,
           ip3: BBIP3,
           token3: BBtoken3,
+          fullSetup3: fullSetup3,
+          timerSetup3: timerSetup3,
           debug3: BBdebug3,
-          fullSetup: fullSetup,
-          timerSetup: timerSetup,
           feedback: feedback 
         });
-
-        // update the #feedbackOutput with the response
-        document.querySelector('#feedbackOutput').value = response.feedback;
 
         if(response.feedback.includes("ERROR")) {
            // create a red toast notification of the error
@@ -173,6 +193,7 @@
            return;
         } else if(response.feedback.includes("DONE")) {
            // show a success toast notification
+           homebridge.toast.success(`${response.feedback}`, 'Success');
            homebridge.toast.success('ConfigCreator completed!', 'Success');
            return;
         } else {
