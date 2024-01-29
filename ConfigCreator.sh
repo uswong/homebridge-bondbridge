@@ -153,7 +153,8 @@ function myPlaceConstantsQueueTypesAccessoriesMiscFooter()
 
 function myPlaceFan()
 {
-   local name="$2"
+   local name="${2}"
+   local minStep="${3}"  
 
    { echo "        {"
      echo "            \"type\": \"Fan\","
@@ -175,7 +176,7 @@ function myPlaceFan()
      echo "            ],"
      echo "            \"props\": {"
      echo "                \"rotationSpeed\": {"
-     echo "                    \"minStep\": 25"
+     echo "                    \"minStep\": ${minStep}"
      echo "                }"
      echo "            },"
      echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
@@ -186,8 +187,10 @@ function myPlaceFan()
 
 function myPlaceLightbulb()
 {
-   local name="$2"
-   local accType="$3"
+   local name="${2}"
+   local accType="${3}"
+   local minStep="${4}"  
+
    { echo "        {"
      echo "            \"type\": \"Lightbulb\","
      echo "            \"displayName\": \"${name}\","
@@ -208,7 +211,7 @@ function myPlaceLightbulb()
      echo "            ],"
      echo "            \"props\": {"
      echo "                \"brightness\": {"
-     echo "                    \"minStep\": 14"
+     echo "                    \"minStep\": ${minStep}"
      echo "                }"
      echo "            },"
      echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
@@ -1064,11 +1067,13 @@ for ((n=1; n<=noOfBondBridges; n++)); do
       if expr "${device}" : '^\"[a-f0-9]*\"$' >/dev/null; then
          device=${device//\"/}
          timerDevice=$(echo "${device}" | rev)
+         max_speed=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IPA}"/v2/devices/"${device}"/properties |  jq ".max_speed")
+         speed_interval=$((100 / max_speed))
          name=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IPA}"/v2/devices/"${device}" |  jq ".name")
          name=${name//\"/}
          if expr "${name}" : '[a-zA-Z0-9 ]*Fan$' >/dev/null; then
             if [ "${fullSetup}" = "fullSetup" ]; then
-               myPlaceFan "${myPlaceConfigAccessoriesBB}" "${name}"
+               myPlaceFan "${myPlaceConfigAccessoriesBB}" "${name}" "${speed_interval}"
             fi
             if [ "${timerSetup}" = "includeTimers" ]; then
                myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "fanTimer" "fanDevice"
@@ -1077,9 +1082,9 @@ for ((n=1; n<=noOfBondBridges; n++)); do
          #
          if expr "${name}" : '[a-zA-Z0-9 ]*Light$' >/dev/null; then
             if [ "${fullSetup}" = "fullSetup" ]; then
-               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name}" "light"
+               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name}" "light" "${speed_interval}"
             else
-               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Dimmer" "dimmer"
+               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Dimmer" "dimmer" "${speed_interval}"
             fi
             if [ "${timerSetup}" = "includeTimers" ]; then
                myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "lightTimer" "lightDevice"
