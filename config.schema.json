@@ -34,7 +34,7 @@
                      "required": true,
                      "placeholder": ""
                   },
-                  "fullsetup": {
+                  "fullSetup": {
                      "title": "Full Setup",
                      "description": "Include a Fan/SpeedControl and a Light/Dimmer, otherwise a Light Dimmer only.",
                      "type": "boolean",
@@ -76,7 +76,7 @@
       "items": [
          "devices[].ipAddress",
          "devices[].token",
-         "devices[].fullsetup",
+         "devices[].fullSetup",
          "devices[].timerSetup",
          "devices[].debug"
          ]
