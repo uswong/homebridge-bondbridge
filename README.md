@@ -63,7 +63,8 @@ A configuration file is required to run this plugin and it can be generated auto
 
 Go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Configuration Creator and Checker</B> and <B>Bond Bridge Device Settings</B> page.
 
-![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/1253a2d2-2607-47f6-b9c4-e10bf81852f0)
+![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/cd90869b-d572-478a-837b-a2a5043698f9)
+
 
 In <B>Bond Bridge Device Settings</B> area, fill out the `IP Address` and `Local Token` of your Bond Bridge device and Select a `Ceiling Fan Setup Option` from a drop down menu, check/uncheck the `Include timers` and `Enable detailed debug log` checkboxes, then click `SAVE`. This is to save your system parameters. Click `CLOSE` if a pop up urging you to `RESTART HOMEBRIDGE`.
    
