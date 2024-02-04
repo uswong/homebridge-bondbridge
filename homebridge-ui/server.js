@@ -37,19 +37,19 @@ class UiServer extends HomebridgePluginUiServer
       if (payload.ip !== "") 
       {
          console.log(`Processing BondBridge device: ${payload.ip}, token: ${payload.token}, debug: ${payload.debug}`);
-         console.log(`Setup instruction: ${payload.fullSetup}`);
+         console.log(`Setup instruction: ${payload.setupOption}`);
          console.log(`Timer setup instruction: ${payload.timerSetup}`);
       }
       if (payload.ip2 !== "") 
       {
          console.log(`Processing BondBridge device: ${payload.ip2}, token: ${payload.token2}, debug: ${payload.debug2}`);
-         console.log(`Setup instruction: ${payload.fullSetup2}`);
+         console.log(`Setup instruction: ${payload.setupOption2}`);
          console.log(`Timer setup instruction: ${payload.timerSetup2}`);
       }
       if (payload.ip3 !== "") 
       {
          console.log(`Processing BondBridge device: ${payload.ip3}, token: ${payload.token3}, debug: ${payload.debug3}`);
-         console.log(`Setup instruction: ${payload.fullSetup3}`);
+         console.log(`Setup instruction: ${payload.setupOption3}`);
          console.log('Timer setup instruction:', payload.timerSetup3);
       }
 
@@ -59,7 +59,7 @@ class UiServer extends HomebridgePluginUiServer
 
          //This spawns a child process which runs a bash script
          const spawnSync = require('child_process').spawnSync;
-         let FeedBack = spawnSync(ConfigCreator_shPath, [payload.ip,payload.token,payload.fullSetup,payload.timerSetup,payload.debug,payload.ip2,payload.token2,payload.fullSetup2,payload.timerSetup2,payload.debug2,payload.ip3,payload.token3,payload.fullSetup3,payload.timerSetup3,payload.debug3,BondBridge_shPath], {encoding: 'utf8'});
+         let FeedBack = spawnSync(ConfigCreator_shPath, [payload.ip,payload.token,payload.setupOption,payload.timerSetup,payload.debug,payload.ip2,payload.token2,payload.setupOption2,payload.timerSetup2,payload.debug2,payload.ip3,payload.token3,payload.setupOption3,payload.timerSetup3,payload.debug3,BondBridge_shPath], {encoding: 'utf8'});
          let feedback = `${ FeedBack.stdout.replace(/\n*$/, "")}`
 
          // return data to the ui
