@@ -34,18 +34,24 @@
                      "required": true,
                      "placeholder": ""
                   },
-                  "fullSetup": {
-                     "title": "Full Setup",
-                     "description": "Include a Fan/SpeedControl and a Light/Dimmer, otherwise a Light Dimmer only.",
-                     "type": "boolean",
-                     "required": false,
-                     "default": false
+                  "setupOption": {
+                     "title": "Ceiling Fan Setup Option:",
+                     "description": "Choose an option from this drop down menu.",
+                     "type": "string",
+                     "required": true,
+                     "oneOf": [
+                       { "title": "Include only a Fan/SpeedControl", "enum": ["fan"] },
+                       { "title": "Include only a Light/Dimmer", "enum": ["light"] },
+                       { "title": "Inlcude both Fan/SpeedControl and Light/Dimmer", "enum": ["fanLight"] },
+                       { "title": "Inlcude only a Light Dimmer", "enum": ["lightDimmer"] }
+                     ],
+                     "default": "lightDimmer" 
                   },
                   "timerSetup": {
                      "title": "Include Timers",
                      "description": "Include a Fan timer and a Light timer, otherwise no timers.",
                      "type": "boolean",
-                     "required": false,
+                     "required": true,
                      "default": false
                   },
                   "debug": {
@@ -76,7 +82,7 @@
       "items": [
          "devices[].ipAddress",
          "devices[].token",
-         "devices[].fullSetup",
+         "devices[].setupOption",
          "devices[].timerSetup",
          "devices[].debug"
          ]
