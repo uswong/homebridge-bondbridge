@@ -53,48 +53,51 @@
       })
     }
 
+    // Bond bridge device variables
     BBIP = "";
     BBtoken = "";
-    BBtimerSetup = "false";
     BBdebug = "false";
     BBIP2 = "";
     BBtoken2 = "";
-    BBtimerSetup2 = "false";
     BBdebug2 = "false";
     BBIP3 = "";
     BBtoken3 = "";
-    BBtimerSetup3 = "false";
     BBdebug3 = "false";
     feedback = "";
-    var setupOption;
-    var timerSetup;
-    var setupOption2;
-    var timerSetup2;
-    var setupOption3;
-    var timerSetup3;
+
+    // Ceiling Fan settings variables
+    BBtimerSetup = "false";
+    var CFsetupOption;
+    var CFtimerSetup;
+    BBtiserSetup2 = "false";
+    var CFsetupOption2;
+    var CFtimerSetup2;
+    BBtimerSetup3 = "false";
+    var CFsetupOption3;
+    var CFtimerSetup3;
 
     // get the intial from the config and add it to the form
     if (pluginConfig.length) {
       if (pluginConfig[0].devices.length >= 1) {
         BBIP = pluginConfig[0].devices[0].ipAddress;
         BBtoken = pluginConfig[0].devices[0].token;
-        setupOption = pluginConfig[0].devices[0].setupOption;
-        BBtimerSetup = pluginConfig[0].devices[0].timerSetup;
         BBdebug = pluginConfig[0].devices[0].debug;
+        CFsetupOption = pluginConfig[0].devices[0].CFsettings.setupOption;
+        BBtimerSetup = pluginConfig[0].devices[0].CFsettings.timerSetup;
       }
       if (pluginConfig[0].devices.length >= 2) {
         BBIP2 = pluginConfig[0].devices[1].ipAddress;
         BBtoken2 = pluginConfig[0].devices[1].token;
-        setupOption2 = pluginConfig[0].devices[1].setupOption;
-        BBtimerSetup2 = pluginConfig[0].devices[1].timerSetup;
         BBdebug2 = pluginConfig[0].devices[1].debug;
+        CFsetupOption2 = pluginConfig[0].devices[1].CFsettings.setupOption;
+        BBtimerSetup2 = pluginConfig[0].devices[1].CFsettings.timerSetup;
       }
       if (pluginConfig[0].devices.length >= 3) {
         BBIP3 = pluginConfig[0].devices[2].ipAddress;
         BBtoken3 = pluginConfig[0].devices[2].token;
-        setupOption3 = pluginConfig[0].devices[2].setupOption;
-        BBtimerSetup3 = pluginConfig[0].devices[2].timerSetup;
         BBdebug3 = pluginConfig[0].devices[2].debug;
+        CFsetupOption3 = pluginConfig[0].devices[2].CFsettings.setupOption;
+        BBtimerSetup3 = pluginConfig[0].devices[2].CFsettings.timerSetup;
       }
     }
 
@@ -107,7 +110,7 @@
       }
 
       // validate an ip was provided
-      if (BBIP === "undefined" || !BBIP) {
+      if ( !BBIP ) {
         // create a error / red toast notification if the required input is not provided.
         homebridge.toast.error('An ip address of your Bond Bridge device must be provided.', 'Error');
         return;
@@ -118,34 +121,34 @@
 
       // request key paths from the server
       if(pluginConfig[0].devices.length === 1) {
-         if ( setupOption == undefined ) { setupOption = "lightDimmer"; }
+         if ( !CFsetupOption ) { CFsetupOption = "doNotConfigure"; }
          if ( BBtimerSetup ) {
-            timerSetup = "includeTimers";
+            CFtimerSetup = "includeTimers";
          } else {
-            timerSetup = "noTimers";
+            CFtimerSetup = "noTimers";
          }
          homebridge.toast.info(`This may take up to 1 minute to process!`, 'Info');
-         homebridge.toast.info(`(1) ${setupOption} ${timerSetup}.`, 'Setup Info');
+         homebridge.toast.info(`(1) ${CFsetupOption} ${CFtimerSetup}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 2) {
-         if ( setupOption2 == undefined ) { setupOption2 = "lightDimmer"; }
+         if ( !CFsetupOption2 ) { CFsetupOption2 = "doNotConfigure"; }
          if ( BBtimerSetup2 ) {
-            timerSetup2 = "includeTimers";
+            CFtimerSetup2 = "includeTimers";
          } else {
-            timerSetup2 = "noTimers";
+            CFtimerSetup2 = "noTimers";
          }
          homebridge.toast.info(`This may take up to 2 minutes to process!`, 'Info');
-         homebridge.toast.info(`(1) ${setupOption} ${timerSetup}, (2) ${setupOption2} ${timerSetup2}.`, 'Setup Info');
+         homebridge.toast.info(`(1) ${CFsetupOption} ${CFtimerSetup}, (2) ${CFsetupOption2} ${CFtimerSetup2}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 3) {
-         if ( setupOption3 == undefined ) { setupOption3 = "lightDimmer"; }
+         if ( !CFsetupOption3 ) { CFsetupOption3 = "doNotConfigure"; }
          if ( BBtimerSetup3 ) {
-            timerSetup3 = "includeTimers";
+            CFtimerSetup3 = "includeTimers";
          } else {
-            timerSetup3 = "noTimers";
+            CFtimerSetup3 = "noTimers";
          }
          homebridge.toast.info(`This may take up to 3 minutes to process!`, 'Info');
-         homebridge.toast.info(`(1) ${setupOption} ${timerSetup}, (2) ${setupOption2} ${timerSetup2}, (3) ${setupOption3} ${timerSetup3}.`, 'Setup Info');
+         homebridge.toast.info(`(1) ${CFsetupOption} ${CFtimerSetup}, (2) ${CFsetupOption2} ${CFtimerSetup2}, (3) ${CFsetupOption3} ${CFtimerSetup3}.`, 'Setup Info');
       }
 
 
@@ -153,19 +156,19 @@
         const response = await homebridge.request('/configcreator', {
           ip: BBIP,
           token: BBtoken,
-          setupOption: setupOption,
-          timerSetup: timerSetup,
           debug: BBdebug,
+          CFsetupOption: CFsetupOption,
+          CFtimerSetup: CFtimerSetup,
           ip2: BBIP2,
           token2: BBtoken2,
-          setupOption2: setupOption2,
-          timerSetup2: timerSetup2,
           debug2: BBdebug2,
+          CFsetupOption2: CFsetupOption2,
+          CFtimerSetup2: CFtimerSetup2,
           ip3: BBIP3,
           token3: BBtoken3,
-          setupOption3: setupOption3,
-          timerSetup3: timerSetup3,
           debug3: BBdebug3,
+          CFsetupOption3: CFsetupOption3,
+          CFtimerSetup3: CFtimerSetup3,
           feedback: feedback 
         });
 
