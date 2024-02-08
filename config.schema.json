@@ -1,91 +1,136 @@
 {
-   "pluginAlias": "BondBridge",
-   "pluginType": "platform",
-   "singular": true,
-   "customUi": true,
-   "headerDisplay": "Homebridge plugin for BondBridge devices",
-   "schema": {
-      "type": "object",
-      "properties": {
-         "name": {
-           "title": "Name",
-           "type": "string",
-           "default": "BondBridge",
-           "required": true
-         },
-         "devices": {
-            "type": "array",
-            "items": {
-               "title": "Bond Bridge device",
-               "type": "object",
-               "properties": {
-                  "ipAddress": {
-                     "title": "IP Address",
-                     "description": "The device's IP address. It is recommended to set a static IP for this device.",
-                     "type": "string",
-                     "format": "ipv4",
-                     "required": true,
-                     "placeholder": "192.168.0.1"
-                  },
-                  "token": {
-                     "title": "Local Token",
-                     "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
-                     "type": "string",
-                     "required": true,
-                     "placeholder": ""
-                  },
-                  "setupOption": {
-                     "title": "Ceiling Fan Setup Option:",
-                     "description": "Choose an option from this drop down menu.",
-                     "type": "string",
-                     "required": true,
-                     "oneOf": [
-                       { "title": "Include only a Fan/SpeedControl", "enum": ["fan"] },
-                       { "title": "Include only a Light/Dimmer", "enum": ["light"] },
-                       { "title": "Inlcude both Fan/SpeedControl and Light/Dimmer", "enum": ["fanLight"] },
-                       { "title": "Inlcude only a Light Dimmer", "enum": ["lightDimmer"] }
-                     ],
-                     "default": "lightDimmer" 
-                  },
+  "pluginAlias": "BondBridge",
+  "pluginType": "platform",
+  "singular": true,
+  "customUi": true,
+  "headerDisplay": "Homebridge plugin for BondBridge devices",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "BondBridge",
+        "required": true
+      },
+      "devices": {
+        "type": "array",
+        "items": {
+          "title": "Bond Bridge device",
+          "type": "object",
+          "properties": {
+            "ipAddress": {
+              "title": "IP Address",
+              "description": "The device's IP address. It is recommended to set a static IP for this device.",
+              "type": "string",
+              "format": "ipv4",
+              "required": true,
+              "placeholder": "192.168.0.1"
+            },
+            "token": {
+              "title": "Local Token",
+              "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
+              "type": "string",
+              "required": true,
+              "placeholder": ""
+            },
+            "debug": {
+              "title": "Enable detailed debug log",
+              "description": "Enables a detailed debug log. Useful when trying to figure out issues with the plugin.",
+              "type": "boolean",
+              "required": false,
+              "default": false
+            },
+            "CFsettings": {
+              "title": "Ceiling Fan settings",
+              "type": "object",
+              "properties": {
+                "setupOption": {
+                  "title": "Ceiling Fan Setup Option",
+                  "description": "Choose an option from this drop down menu.",
+                  "type": "string",
+                  "required": true,
+                  "oneOf": [
+                    {
+                      "title": "Configure only a Ceiling Fan with SpeedControl",
+                      "enum": [
+                        "fan"
+                      ]
+                    },
+                    {
+                      "title": "Configure a Ceiling fan with SpeedControl and a Light Switch",
+                      "enum": [
+                        "fanLight"
+                      ]
+                    },
+                    {
+                      "title": "Configure a Ceiling Fan with SpeedControl and a Light with Dimmer",
+                      "enum": [
+                        "fanLightDimmer"
+                      ]
+                    },
+                    {
+                      "title": "Configure only a Light Dimmer",
+                      "enum": [
+                        "lightDimmer"
+                      ]
+                    },
+                    {
+                      "title": "Do not configure this Ceiling Fan",
+                      "enum": [
+                        "doNotConfigure"
+                      ]
+                    }
+                  ],
+                  "default": "doNotConfigure"
+                },
                   "timerSetup": {
-                     "title": "Include Timers",
-                     "description": "Include a Fan timer and a Light timer, otherwise no timers.",
-                     "type": "boolean",
-                     "required": true,
-                     "default": false
-                  },
-                  "debug": {
-                     "title": "Enable detailed debug log",
-                     "description": "Enables a detailed debug log. Useful when trying to figure out issues with the plugin.",
-                     "type": "boolean",
-                     "required": false,
-                     "default": false
-                  }
-               }
+                  "title": "Include Timers",
+                  "description": "Configure a Fan timer and a Light timer, otherwise no timers.",
+                  "type": "boolean",
+                  "required": true,
+                  "default": false
+                }
+              }
             }
-         }
+          }
+        }
       }
-   },
-   "layout": [
-      {
+    }
+  },
+  "layout": [
+    {
       "type": "fieldset",
       "title": "Bond Bridge Device Settings",
-      "description": "Enter below the IP address and the unique Token of your Bond Bridge devices.",
-      "items": [
-         ]
-      },
-      {
+      "description": "NOTE: define not more than 3 Bond Bridge devices because only a maximum of 3 Bond Bridge devices can be processed",
+      "items": []
+    },
+    {
       "key": "devices",
       "type": "tabarray",
       "title": "{{ value.ipAddress || 'new device' }}",
-      "description": "Note: only a maximum of 3 Bond Bridge devices can be processed by Config Creator.",
       "items": [
-         "devices[].ipAddress",
-         "devices[].token",
-         "devices[].setupOption",
-         "devices[].timerSetup",
-         "devices[].debug"
-         ]
-      }
-   ]
+        "devices[].ipAddress",
+        "devices[].token",
+        "devices[].debug",
+        {
+          "key": "devices[]",
+          "type": "fieldset`",
+          "title": "{{ value.title }}",
+          "items": [
+            {
+              "type": "fieldset",
+              "title": "Configuring the Celing Fan and its associated Light",
+              "expandable": true,
+              "expanded": false,
+              "items": [
+                "devices[].CFsettings.setupOption",
+                "devices[].CFsettings.timerSetup"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

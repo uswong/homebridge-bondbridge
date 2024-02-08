@@ -27,22 +27,22 @@ UIversion="customUI"
 
 BBIP="${1}"
 BBtoken="${2}"
-setupOption="${3}"
-timerSetup="${4}"
+CFsetupOption="${3}"
+CFtimerSetup="${4}"
 BBdebug="${5}"
 BBIP2="${6}"
 BBtoken2="${7}"
-setupOption2="${8}"
-timerSetup2="${9}"
+CFsetupOption2="${8}"
+CFtimerSetup2="${9}"
 BBdebug2="${10}"
 BBIP3="${11}"
 BBtoken3="${12}"
-setupOption3="${13}"
-timerSetup3="${14}"
+CFsetupOption3="${13}"
+CFtimerSetup3="${14}"
 BBdebug3="${15}"
 BONDBRIDGE_SH_PATH="${16}"
 
-#echo "ERROR: setupOption=${setupOption}, timerSetup=${timerSetup}"
+#echo "ERROR: CFsetupOption=${CFsetupOption}, CFtimerSetup=${CFtimerSetup}"
 #exit 0
 
 # define the possible names for MyPlace platform
@@ -184,7 +184,32 @@ function myPlaceFan()
    } >> "$1"
 }
 
-function myPlaceLightbulb()
+function myPlaceLightbulbNoDimmer()
+{
+   local name="${2}"
+   local accType="${3}"
+
+   { echo "        {"
+     echo "            \"type\": \"Lightbulb\","
+     echo "            \"displayName\": \"${name}\","
+     echo "            \"on\": false,"
+     echo "            \"name\": \"${name}\","
+     echo "            \"manufacturer\": \"OLIBRA\","
+     echo "            \"model\": \"${model}\","
+     echo "            \"serialNumber\": \"${bondid}\","
+     echo "            \"queue\": \"$queue\","
+     echo "            \"polling\": ["
+     echo "                {"
+     echo "                    \"characteristic\": \"on\""
+     echo "                }"
+     echo "            ],"
+     echo "            \"state_cmd\": \"'${BONDBRIDGE_SH_PATH}'\","
+     echo "            \"state_cmd_suffix\": \"${accType} 'token:${bondToken}' 'device:${device}' ${ip}\""
+     echo "        },"
+   } >> "$1"
+}
+
+function myPlaceLightbulbWithDimmer()
 {
    local name="${2}"
    local accType="${3}"
@@ -915,15 +940,34 @@ case $UIversion in
             BBIP="${INPUT}"
             read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
             BBtoken="${INPUT}"
-            setupOption="lightDimmer"
-            read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
-            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then setupOption="setupOption"; fi
-            timerSetup="noTimers"
-            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
-            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup="includeTimers"; fi
             BBdebug="false"
             read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
             if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug="true"; fi
+            echo "${TYEL}"
+            echo "${BOLD}Zone Control Setup Options:${TNRM}"
+            echo "${TYEL}1. Configure only a Ceiling Fan with SpeedControl"
+            echo "2. Configure a Ceiling fan with SpeedControl and a Light Switch"
+            echo "3. Configure a Ceiling Fan with SpeedControl and a Light with Dimmer"
+            echo "4. Configure only a Light Dimmer"
+            echo "5. Do not configure this Ceiling Fan"
+            echo ""
+            CFsetupOption=""
+            until [ -n "${CFsetupOption}" ]; do
+               read -r -p "${TYEL}Select Ceiling Fan setup options (1, 2, 3, 4 or 5, default=5):${TNRM} " INPUT
+               if [ "${INPUT}" = "1" ]; then CFsetupOption="fan"
+               elif [ "${INPUT}" = "2" ]; then CFsetupOption="fanLight"
+               elif [ "${INPUT}" = "3" ]; then CFsetupOption="fanLightDimmer"
+               elif [ "${INPUT}" = "4" ]; then CFsetupOption="lightDimmer"
+               elif [[ "${INPUT}" = "5" || "${INPUT}" = "" ]]; then CFsetupOption="doNotConfigure"
+               else
+                  echo ""
+                  echo "${TPUR}WARNING: Invalid option selected. Try again!${TNRM}"
+                  echo ""
+               fi
+            done
+            CFtimerSetup="noTimers"
+            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then CFtimerSetup="includeTimers"; fi
          else
             echo ""
             echo "${TPUR}WARNING: Wrong format for an IP address! Please enter again!${TNRM}"
@@ -941,15 +985,26 @@ case $UIversion in
             BBIP2="${INPUT}"
             read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
             BBtoken2="${INPUT}"
-            setupOption2="lightDimmer"
-            read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
-            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then setupOption2="setupOption"; fi
-            timerSetup2="noTimers"
-            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
-            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup2="includeTimers"; fi
             BBdebug2="false"
             read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
             if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug2="true"; fi
+            CFsetupOption2=""
+            until [ -n "${CFsetupOption2}" ]; do
+               read -r -p "${TYEL}Select Ceiling Fan setup options (1, 2, 3, 4 or 5, default=5):${TNRM} " INPUT
+               if [ "${INPUT}" = "1" ]; then CFsetupOption2="fan"
+               elif [ "${INPUT}" = "2" ]; then CFsetupOption2="fanLight"
+               elif [ "${INPUT}" = "3" ]; then CFsetupOption2="fanLightDimmer"
+               elif [ "${INPUT}" = "4" ]; then CFsetupOption2="lightDimmer"
+               elif [[ "${INPUT}" = "5" || "${INPUT}" = "" ]]; then CFsetupOption2="doNotConfigure"
+               else
+                  echo ""
+                  echo "${TPUR}WARNING: Invalid option selected. Try again!${TNRM}"
+                  echo ""
+               fi
+            done
+            CFtimerSetup2="noTimers"
+            read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+            if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then CFtimerSetup2="includeTimers"; fi
          else
             echo ""
             echo "${TPUR}WARNING: Wrong format for an IP address! Please enter again!${TNRM}"
@@ -968,15 +1023,26 @@ case $UIversion in
                BBIP3="${INPUT}"
                read -r -p "${TYEL}Token of this device (this can be found in Bond Settings of Bond app): ${TNRM}" INPUT
                BBtoken3="${INPUT}"
-               setupOption3="lightDimmer"
-               read -r -p "${TYEL}Include a Fan/SpeedControl and a Light/Dimmer? Otherwise a Light Dimmer only (y/n, default=n): ${TNRM}" INPUT
-               if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then setupOption3="setupOption"; fi
-               timerSetup3="noTimers"
-               read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
-               if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then timerSetup3="includeTimers"; fi
                BBdebug3="false"
                read -r -p "${TYEL}Enable debug? (y/n, default=n): ${TNRM}" INPUT
                if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then BBdebug3="true"; fi
+               CFsetupOption3=""
+               until [ -n "${CFsetupOption3}" ]; do
+                  read -r -p "${TYEL}Select Ceiling Fan setup options (1, 2, 3, 4 or 5, default=5):${TNRM} " INPUT
+                  if [ "${INPUT}" = "1" ]; then CFsetupOption3="fan"
+                  elif [ "${INPUT}" = "2" ]; then CFsetupOption3="fanLight"
+                  elif [ "${INPUT}" = "3" ]; then CFsetupOption3="fanLightDimmer"
+                  elif [ "${INPUT}" = "4" ]; then CFsetupOption3="lightDimmer"
+                  elif [[ "${INPUT}" = "5" || "${INPUT}" = "" ]]; then CFsetupOption3="doNotConfigure"
+                  else
+                     echo ""
+                     echo "${TPUR}WARNING: Invalid option selected. Try again!${TNRM}"
+                     echo ""
+                  fi
+               done
+               CFtimerSetup3="noTimers"
+               read -r -p "${TYEL}Include a Light and a Fan timer? (y/n, default=n): ${TNRM}" INPUT
+               if [[ "${INPUT}" = "y" || "${INPUT}" = "Y" || "${INPUT}" = "true" ]]; then CFtimerSetup3="includeTimers"; fi
             else
                echo ""
                echo "${TNRM}${TPUR}WARNING: Wrong format for an IP address! Please enter again!${TNRM}"
@@ -986,9 +1052,9 @@ case $UIversion in
       fi
 
       echo ""
-      echo "${TLBL}INFO: (1) ip1:${BBIP}, token1:${BBtoken},${setupOption}, ${timerSetup}${TNRM}"
-      if [ -n "${BBIP2}" ]; then echo "${TLBL}INFO: (2) ip2:${BBIP2}, token2:${BBtoken2}, ${setupOption2}, ${timerSetup2}${TNRM}"; fi
-      if [ -n "${BBIP3}" ]; then echo "${TLBL}INFO: (3) ip3:${BBIP3}, token3:${BBtoken3}, ${setupOption3}, ${timerSetup3}${TNRM}"; fi
+      echo "${TLBL}INFO: (1) ip1:${BBIP}, token1:${BBtoken}, ${CFsetupOption}, ${CFtimerSetup}${TNRM}"
+      if [ -n "${BBIP2}" ]; then echo "${TLBL}INFO: (2) ip2:${BBIP2}, token2:${BBtoken2}, ${CFsetupOption2}, ${CFtimerSetup2}${TNRM}"; fi
+      if [ -n "${BBIP3}" ]; then echo "${TLBL}INFO: (3) ip3:${BBIP3}, token3:${BBtoken3}, ${CFsetupOption3}, ${CFtimerSetup3}${TNRM}"; fi
       echo ""
 
       # get the full path to BondBridge.sh
@@ -1042,8 +1108,8 @@ for ((n=1; n<=noOfBondBridges; n++)); do
       ip="\${BBIP2}"
       IPA="${BBIP2}"
       bondToken="${BBtoken2}"
-      setupOption="${setupOption2}"
-      timerSetup="${timerSetup2}"
+      CFsetupOption="${CFsetupOption2}"
+      CFtimerSetup="${CFtimerSetup2}"
       debug="${BBdebug2}"
       queue="BBB"
    fi
@@ -1051,8 +1117,8 @@ for ((n=1; n<=noOfBondBridges; n++)); do
       ip="\${BBIP3}"
       IPA="${BBIP3}"
       bondToken="${BBtoken3}"
-      setupOption="${setupOption3}"
-      timerSetup="${timerSetup3}"
+      CFsetupOption="${CFsetupOption3}"
+      CFtimerSetup="${CFtimerSetup3}"
       debug="${BBdebug3}"
       queue="BBC"
    fi
@@ -1114,23 +1180,27 @@ for ((n=1; n<=noOfBondBridges; n++)); do
          speed_interval=$((100 / max_speed))
          name=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IPA}"/v2/devices/"${device}" |  jq ".name")
          name=${name//\"/}
-         if expr "${name}" : '[a-zA-Z0-9 ]*Fan$' >/dev/null; then
-            if [[ "${setupOption}" = "fan" || "${setupOption}" = "fanLight" ]]; then
-               myPlaceFan "${myPlaceConfigAccessoriesBB}" "${name}" "${speed_interval}"
+         if [ "${CFsetupOption}" != "doNotConfigure" ]; then
+            if expr "${name}" : '[a-zA-Z0-9 ]*Fan$' >/dev/null; then
+               if [ "${CFsetupOption}" != "lightDimmer" ]; then
+                  myPlaceFan "${myPlaceConfigAccessoriesBB}" "${name}" "${speed_interval}"
+               fi
+               if [ "${CFtimerSetup}" = "includeTimers" ]; then
+                  myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "fanTimer" "fanDevice"
+               fi
             fi
-            if [ "${timerSetup}" = "includeTimers" ]; then
-               myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "fanTimer" "fanDevice"
-            fi
-         fi
-         #
-         if expr "${name}" : '[a-zA-Z0-9 ]*Light$' >/dev/null; then
-            if [[ "${setupOption}" = "light" || "${setupOption}" = "fanLight" ]]; then
-               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name}" "light" "${speed_interval}"
-            elif [ "${setupOption}" = "lightDimmer" ]; then
-               myPlaceLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Dimmer" "dimmer" "${speed_interval}"
-            fi
-            if [ "${timerSetup}" = "includeTimers" ]; then
-               myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "lightTimer" "lightDevice"
+            #
+            if expr "${name}" : '[a-zA-Z0-9 ]*Light$' >/dev/null; then
+               if [ "${CFsetupOption}" = "fanLight" ]; then
+                  myPlaceLightbulbNoDimmer "${myPlaceConfigAccessoriesBB}" "${name}" "light"
+               elif [ "${CFsetupOption}" = "fanLightDimmer"  ]; then
+                  myPlaceLightbulbWithDimmer "${myPlaceConfigAccessoriesBB}" "${name}" "light" "${speed_interval}"
+               elif [ "${CFsetupOption}" = "lightDimmer" ]; then
+                  myPlaceLightbulbWithDimmer "${myPlaceConfigAccessoriesBB}" "${name} Dimmer" "dimmer" "${speed_interval}"
+               fi
+               if [[ "${CFtimerSetup}" = "includeTimers" && "${CFsetupOption}" != "fan" ]]; then
+                  myPlaceTimerLightbulb "${myPlaceConfigAccessoriesBB}" "${name} Timer" "lightTimer" "lightDevice"
+               fi
             fi
          fi
       fi
