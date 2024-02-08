@@ -3,15 +3,16 @@
    "displayName": "Homebridge BondBridge",
    "description": "Catered shell script to integrate BondBridge units by Bond",
    "license": "MIT",
-   "version": "2.2.2",
+   "version": "2.2.3",
    "author": {
       "name": "Ung Sing Wong"
    },
    "repository": {
       "type": "git",
       "url": "https://github.com/uswong/homebridge-bondbridge.git"
-   },
+   },   
    "homepage": "https://github.com/uswong/homebridge-bondbridge#readme",
+   "changelog": "https://github.com/uswong/homebridge-bondbridge/blob/master/CHANGELOG.md",
    "bugs": {
       "url": "https://github.com/uswong/homebridge-bondbridge/issues",
       "email": "uswong@gmail.com"
