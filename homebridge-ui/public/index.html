@@ -110,7 +110,7 @@
       }
 
       // validate an ip was provided
-      if ( !BBIP ) {
+      if ( BBIP == undefined || !BBIP ) {
         // create a error / red toast notification if the required input is not provided.
         homebridge.toast.error('An ip address of your Bond Bridge device must be provided.', 'Error');
         return;
@@ -121,7 +121,7 @@
 
       // request key paths from the server
       if(pluginConfig[0].devices.length === 1) {
-         if ( !CFsetupOption ) { CFsetupOption = "doNotConfigure"; }
+         if ( CFsetupOption == undefined ) { CFsetupOption = "doNotConfigure"; }
          if ( BBtimerSetup ) {
             CFtimerSetup = "includeTimers";
          } else {
@@ -131,7 +131,7 @@
          homebridge.toast.info(`(1) ${CFsetupOption} ${CFtimerSetup}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 2) {
-         if ( !CFsetupOption2 ) { CFsetupOption2 = "doNotConfigure"; }
+         if ( CFsetupOption2 == undefined ) { CFsetupOption2 = "doNotConfigure"; }
          if ( BBtimerSetup2 ) {
             CFtimerSetup2 = "includeTimers";
          } else {
@@ -141,7 +141,7 @@
          homebridge.toast.info(`(1) ${CFsetupOption} ${CFtimerSetup}, (2) ${CFsetupOption2} ${CFtimerSetup2}.`, 'Setup Info');
       }
       if(pluginConfig[0].devices.length === 3) {
-         if ( !CFsetupOption3 ) { CFsetupOption3 = "doNotConfigure"; }
+         if ( CFsetupOption3 == undefined ) { CFsetupOption3 = "doNotConfigure"; }
          if ( BBtimerSetup3 ) {
             CFtimerSetup3 = "includeTimers";
          } else {
