@@ -3,7 +3,7 @@
    "displayName": "Homebridge BondBridge",
    "description": "Catered shell script to integrate BondBridge units by Bond",
    "license": "MIT",
-   "version": "2.2.3",
+   "version": "2.2.4",
    "author": {
       "name": "Ung Sing Wong"
    },
