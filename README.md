@@ -63,10 +63,9 @@ A configuration file is required to run this plugin and it can be generated auto
 
 Go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Configuration Creator and Checker</B> and <B>Bond Bridge Device Settings</B> page.
 
-![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/cd90869b-d572-478a-837b-a2a5043698f9)
+![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/625bd9c3-2dac-4a40-8882-b3c3aa1fec8c)
 
-
-In <B>Bond Bridge Device Settings</B> area, fill out the `IP Address` and `Local Token` of your Bond Bridge device and Select a `Ceiling Fan Setup Option` from a drop down menu, check/uncheck the `Include timers` and `Enable detailed debug log` checkboxes, then click `SAVE`. This is to save your system parameters. Click `CLOSE` if a pop up urging you to `RESTART HOMEBRIDGE`.
+In <B>Bond Bridge Device Settings</B> area, fill out the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu, check/uncheck the `Include timers` checkbox, then click `SAVE`. This is to save your system parameters. Click `CLOSE` if a pop up urging you to `RESTART HOMEBRIDGE`.
    
    Go back to `Plugin Config` again and press the `CREATE CONFIGURATION` button to create the required configuration file.  On a sucess, click `CHECK CONFIGURATION`to check the configuration file just created is in order. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what needs to be fixed. Click `CLOSE` then restart Homebridge.
 
@@ -79,9 +78,8 @@ In <B>Bond Bridge Device Settings</B> area, fill out the `IP Address` and `Local
   
   *typical `<Plugin Path>` is `/var/lib/hoobs/<bridge>` 
 
-![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/996f193f-5c30-4281-83b9-989c922b5305)
-![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/b7292126-139d-4c30-b1a1-0ed32e77da9b)
-
+![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/3005ca90-06d9-482c-9279-83dec6272ccd)
+![image](https://github.com/uswong/homebridge-bondbridge/assets/96530237/e347572f-bbd4-459d-9dc1-46264ef07af4)
  
  ## What You Expect to See in Homekit
 For 'Full Setup' with 'Timers', you should expect to see 4 Homekit tiles per ceiling fan/light; one for the Fan with speed control, one for the Light with brightness control, one for the Fan Timer and another for the Light Timer (not shown, it is similar to the Fan Timer). 
