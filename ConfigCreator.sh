@@ -886,6 +886,7 @@ function cleanUp()
    rm -f "${myPlaceConfigConstantsNonBB}"
    rm -f "${myPlaceConfigQueueTypesNonBB}"
    rm -f "${myPlaceConfigAccessoriesNonBB}"
+   rm -f "${myPlaceConfigDevicesKey}"
    rm -f "${myPlaceConfigMiscKeys}"
    rm -f "${myPlaceConfigJsonBBwithNonBB}"
    rm -f "${configJsonNew}"
