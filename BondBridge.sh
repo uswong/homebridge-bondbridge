@@ -77,7 +77,7 @@ function logError()
 
    sfx="$rc-$io-$device-$characteristic"
    sfx=${sfx// /_}
-   fileName="${tmpSubDir}/AAerror-${sfx}.txt"
+   fileName="${tmpSubDir}/BBerror-${sfx}.txt"
    file=$(find "${fileName}"* 2>&1|grep -v find)
    #
    # append a counter to the file so that the number of same error is logged
