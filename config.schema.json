@@ -120,9 +120,9 @@
           "items": [
             {
               "type": "fieldset",
-              "title": "Configuring the Celing Fan and its associated Light",
+              "title": "Celing Fan and its associated Light specific settings",
               "expandable": true,
-              "expanded": false,
+              "expanded": true,
               "items": [
                 "devices[].CFsettings.setupOption",
                 "devices[].CFsettings.timerSetup"
