@@ -55,7 +55,38 @@ This plugin does not use the built-in timers but use custom-built timers within 
      apk add jq
      apk add curl
      ```
-
+   #### Important note:
+   At the time of updating this README, the `apt-get insatall` only allow jq-1.6 to be installed. To install the lastest and **MUCH faster** version of jq-1.7.1, please follow the step-by-step guide below:
+   1. Download the Source Code:
+   You can download the source code "jq-1.7.1.tar.gz" for jq 1.7.1 from the official GitHub releases page (https://github.com/jqlang/jq/releases) or use the link below:
+      ```shell
+      wget https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz
+      ```
+   2. Install Dependencies:
+   Ensure you have the necessary build tools and dependencies installed. You can do this by running:
+      ```shell
+      sudo apt-get update
+      sudo apt-get install -y autoconf automake libtool make gcc
+      ```
+   3. Extract and Build:
+   Extract the downloaded tarball and navigate to the directory:
+      ```shell
+      tar -xvzf jq-1.7.1.tar.gz
+      cd jq-1.7.1
+      chmod +x configure
+      ```
+   4. Run the following commands to build and install jq:
+      ```shell
+      ./configure
+      make
+      sudo make install
+      ```
+   5. Verify Installation:
+      After installation, you can verify that jq is installed correctly by running:
+      ```shell
+      jq --version
+      ```
+      
 ## Configuring the Plugin
 A configuration file is required to run this plugin and it can be generated automatically by running the script **ConfigCreator.sh**.
 
