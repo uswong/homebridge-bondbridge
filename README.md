@@ -26,10 +26,10 @@ This plugin does not use the built-in timers but use custom-built timers within 
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
-2. Install the `homebridge-myplace` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`.
+2. Install the `homebridge-myplace` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, click on the "three dots" at the bottom right and click on "JSON Config", and a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`. Another pop-up dialogue box will appear, click "SAVE" again.  You will then be prompted to "RESTART HOMEBRIDGE".  You don't have to restart hombridge but can click "CLOSE" now to move on to the next step.
      
      Note: `homebridge-myplace` plug-in is essential because the `homebridge-bondbridge` plug-in is dependent on it.
-3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
+3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, do the same thing as describe in step 2.
 4. If you have not already, install  <B>jq</B> and <B>curl</B> via your terminal or Homebridge UI terminal or through ssh: 
 
 
