@@ -3,11 +3,11 @@ For ceiling fans fitted with **Hunter Pacific LOGIC remote control** or **equiva
 
 ## Introduction
 
-This `homebridge-bondbridge` plugin is specially designed to control ceiling fans fitted with **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below) or **equivalent** via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)** (right image below).
-
-![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
+This `homebridge-bondbridge` plugin is specially designed to control ceiling fans fitted with **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below) or **equivalent** via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)** (right image below). 
 
 You can make use of this plugin only if your ceiling fan is fitted with a RF remote which is not in the Bond Bridge database and it has a Light with Dimmer function, otherwise you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
+
+![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
 ## How to programme my RF remote control functions onto Bond Bridge RF Controller
 To work as intended, the RF remote control functions need to be programmed onto the Bond Bridge RF Controller as two separate "Celing Fan" devices, one for the Fan and one for the Light:
@@ -26,7 +26,7 @@ This plugin does not use the built-in timers but use custom-built timers within 
 ## Installation
 ### Raspbian/HOOBS/macOS/NAS:
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
-2. Install the `homebridge-myplace` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, click on the "three dots" at the bottom right and click on "JSON Config", and a pop-up box with a small config in it will appear. Do not edit anything and make sure you click `SAVE`. Another pop-up dialogue box will appear, click "SAVE" again.  You will then be prompted to "RESTART HOMEBRIDGE".  You don't have to restart hombridge but can click "CLOSE" now to move on to the next step.
+2. Install the `homebridge-myplace` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, click on the "three dots" at the bottom right and click on "JSON Config", and a pop-up box with a small config in it will appear. Do not edit anything but make sure you click `SAVE`. More pop-up dialogue box may appear, click "SAVE" again to all until you are prompted to "RESTART HOMEBRIDGE".  You don't have to restart hombridge but can click "CLOSE" now to move on to the next step.
      
      Note: `homebridge-myplace` plug-in is essential because the `homebridge-bondbridge` plug-in is dependent on it.
 3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function. Once installed, do the same thing as describe in step 2.
@@ -58,18 +58,21 @@ This plugin does not use the built-in timers but use custom-built timers within 
    #### Important note:
    At the time of updating this README, the `apt-get insatall` only allow jq-1.6 to be installed. To install the lastest and **MUCH faster** version of jq-1.7.1, please follow the step-by-step guide below:
    1. Download the Source Code:
-   You can download the source code "jq-1.7.1.tar.gz" for jq 1.7.1 from the official GitHub releases page (https://github.com/jqlang/jq/releases) or use the link below:
+   
+      You can download the source code "jq-1.7.1.tar.gz" for jq 1.7.1 from the official GitHub releases page (https://github.com/jqlang/jq/releases) or use the link below:
       ```shell
       wget https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz
       ```
    2. Install Dependencies:
-   Ensure you have the necessary build tools and dependencies installed. You can do this by running:
+   
+      Ensure you have the necessary build tools and dependencies installed. You can do this by running:
       ```shell
       sudo apt-get update
       sudo apt-get install -y autoconf automake libtool make gcc
       ```
    3. Extract and Build:
-   Extract the downloaded tarball and navigate to the directory:
+   
+      Extract the downloaded tarball and navigate to the directory:
       ```shell
       tar -xvzf jq-1.7.1.tar.gz
       cd jq-1.7.1
@@ -82,6 +85,7 @@ This plugin does not use the built-in timers but use custom-built timers within 
       sudo make install
       ```
    5. Verify Installation:
+
       After installation, you can verify that jq is installed correctly by running:
       ```shell
       jq --version
@@ -98,12 +102,12 @@ Go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridg
 
 In <B>Bond Bridge Device Settings</B> area, fill out the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu, check/uncheck the `Include timers` checkbox, then click `SAVE`. This is to save your system parameters. Click `CLOSE` if a pop up urging you to `RESTART HOMEBRIDGE`.
    
-   Go back to `Plugin Config` again and press the `CREATE CONFIGURATION` button to create the required configuration file.  On a sucess, click `CHECK CONFIGURATION`to check the configuration file just created is in order. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what needs to be fixed. Click `CLOSE` then restart Homebridge.
+   Go back to `Plugin Config` again and press the `CREATE CONFIGURATION` button to create the required configuration file.  On a sucess, click `CHECK CONFIGURATION`to check the configuration file just created is in order. On a success it will say `Passed`; if something is incorrect, an error message will pop up telling you what needs to be fixed. Finally, click `SAVE` and `RESTART HOMEBRIDGE`.
 
 (B) HOOBS users who do not have access to Homebridge UI (for now!) will have to run the Config Creator on a terminal:
 ```shell
    cd
-   <Plugin Path>/node_modules/homebridge-myplace/ConfigCreator.sh
+   <Plugin Path>/node_modules/homebridge-bondbridge/ConfigCreator.sh
 ```
   then follow the on-screen instructions.
   
