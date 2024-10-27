@@ -1,11 +1,11 @@
 # homebridge-bondbridge
-For ceiling fans fitted with **Hunter Pacific LOGIC remote control** or **equivalent** via **Bond Bridge RF Controller**
+This plugin is to bring your <B>Ceiling Fan with Dimmable Light</B> that is fitted with a RF remote control to Homekit via **Bond Bridge RF Controller**
 
 ## Introduction
 
-This `homebridge-bondbridge` plugin is specially designed to control ceiling fans fitted with **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below) or any ceiling fan which is not in the Bond Bridge database but fitted with a RF remote control and has a Light with Dimmer function, via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)** (right image below). 
+This `homebridge-bondbridge` plugin is specially designed to bring <B>Ceiling Fans with Dimmable Light</B> that is fitted with a RF remote control to Homekit via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)**. The RF remote control I am having here is **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below).  Any ceiling fan that is fitted with a RF remote control and has a dimmable Light should be able to take advantage of this plugin.
 
-If you can find your ceiling fan in the Bond Bridge database, then you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
+However, if you can find your ceiling fan in the Bond Bridge database, then you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
