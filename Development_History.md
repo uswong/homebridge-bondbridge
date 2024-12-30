@@ -1,13 +1,13 @@
-# homebridge-cmd4-bondbridge
+# homebridge-bondbridge
 
 ## Introduction
-This `homebridge-cmd4-bondbridge` plugin is specifically designed for ceiling fan with `Hunter Pacific LOGIC remote control` based on Bond V2 OpenAPI.
+This `homebridge-bondbridge` plugin is specifically designed for ceiling fan with `Hunter Pacific LOGIC remote control` based on Bond V2 OpenAPI.
 
 There is already a very advanced `homebridge-bond` plugin (https://github.com/aarons22/homebridge-bond), also based on Bond V2 OpenAPI, to control all devices mapped onto `Bond Bridge`. It is also very easy to set up! 
 
 However, if your remote control (like my `LOGIC` remote control) is not in the `Bond Bridge` database, you need to map each button of your remote into `Bond Bridge` manually. The device created manually this way is referred to as `Raw Recorded Device`. The potential issue with `Raw Recorded Device` is that the accessories created on Homekit using `homebridge-bond` plugin may not be as intuitive as you want it to be and also may not be as functional as the remote itself.  This is the case for me, as such, I have decided to code this alternative plugin.
 
-This plugin is not a standalone plugin but one which piggy-back on existing `homebridge-cmd4` plugin which takes care of the creation of accessories in HomeKit and all the communications with HomeKit.  All I need to do is to code a `BondBridge.sh` bash script to take care of the interations between `homebridge-cmd4` and `Bond Bridge`.
+This plugin is not a standalone plugin but one which piggy-back on existing `homebridge-myplace` plugin which takes care of the creation of accessories in HomeKit and all the communications with HomeKit.  All I need to do is to code a `BondBridge.sh` bash script to take care of the interations between `homebridge-myplace` and `Bond Bridge`.
 
 ## Hunter Pacific LOGIC remote control
 My `Hunter Pacific` `LOGIC` remote control is a very comprehensice Ceiling Fan remote control. It provides 4 speeds Fan with 4 levels Timer (1, 2, 3 and 6 hours) and 7 levels Light dimmer which also comes with 4 levels Timer.  This remote control allows the Fan Speed and the Light dimmer to be set even when the Fan or Light is in Off state.  The setting of the Fan speed when the Fan is Off will turn On the Fan.  The setting of the dimmer when the Light is Off will not turn On the Light.
@@ -56,7 +56,7 @@ These 4 accessories are independent of each other.  It is ok for the **Fan** & *
 
     b. The **Timer**, once set, can only be cancelled by turning off the associated device. So if you just want to cancel the Timer, the associated device (**Fan** or **Light**) has to be turned **Off** and turn back **On** again. 
 
-With the Bond V2 local OpenAPI and with my very recent experiences in bash script coding in `homebridge-cmd4` envoironment, I managed to code this `BondBridge.sh` bash script to have my remote control represented more intuitively on HomeKit and fully functional, perhaps even more functional, as the remote itself. The additional big advantage of this representation on Homekit is to be able to take advantage of the convenience of `Siri`.  I can ask `Siri` to turn **On/Off** the **Fan/Light** and set/cancel **Timers** without reaching out for the remote or the smart phone. If you are very tired and in bed already, getting up to get the remote or the smart phone is an undesirable chore! 
+With the Bond V2 local OpenAPI and with my very recent experiences in bash script coding, I managed to code this `BondBridge.sh` bash script to have my remote control represented more intuitively on HomeKit and fully functional, perhaps even more functional, as the remote itself. The additional big advantage of this representation on Homekit is to be able to take advantage of the convenience of `Siri`.  I can ask `Siri` to turn **On/Off** the **Fan/Light** and set/cancel **Timers** without reaching out for the remote or the smart phone. If you are very tired and in bed already, getting up to get the remote or the smart phone is an undesirable chore! 
 
 ### Version 2
 I don't exactly like the remote timer very much! I decided to have a timer independent of the remote but done locally within my homebridge script.  This version 2 homebridge script (`BaondBridge_v2.sh`) has the same Fan and Light functions as before but with `countDownToOn` and `countDownToOff` timer. If the Fan or Light is in Off state, the timer set will be a `countDownToOn` timer.  If the Fan or Light is in On state, the timer set will be a `countDownToOff` timer. The remaining time on the timer is also displayed on the Homekit timer accessory as well. You can cancel or reset the timer anytime you wish without needing to turn off the Fan/Light. 
