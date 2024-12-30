@@ -15,16 +15,15 @@ bondDevice=""
 bondToken=""
 fanDevice=""
 lightDevice=""
-value="1"
+value=""
 speed=""
 action="state"
-queryType="copy2"
 ioType=""
 
 #
 # Global returned data
 #
-rc=1
+rc=0
 state="{}"
 #
 # For optional args and arg parsing
@@ -33,16 +32,18 @@ state="{}"
 # Default values
 argSTART=4
 logErrors=true
-debugSpecified=false 
+debugSpecified=false
 lightSpecified=false
 dimmerSpecified=false
 fanSpecified=false
 fanTimerSpecified=false
+lightTimerSpecified=false
 
 #Temporary files - the subdirectory full path will be defined later
 if [ -z "${TMPDIR}" ]; then TMPDIR="/tmp"; fi
 tmpSubDir="${TMPDIR}"
-BONDBRIDGE_STATE_FILE="BondBridgeState.txt"
+BONDBRIDGE_STATE_FILE="BBstate.txt"
+BONDBRIDGE_TIMER_STATE_FILE="BBtimerState.txt"
 BONDBRIDGE_LOG_FILE="BondBridge.log"
 
 function showHelp()
@@ -65,30 +66,24 @@ function logError()
    if [ "$logErrors" != true ]; then
       return
    fi
-
    local comment="$1"
    local result="$2"
    local data1="$3"
    local data2="$4"
-   local count=1
    local sfx
-   local file
-   local fileName
-
    sfx="$rc-$io-$device-$characteristic"
    sfx=${sfx// /_}
-   fileName="${tmpSubDir}/BBerror-${sfx}.txt"
+   local fileName="${tmpSubDir}/BBerror-${sfx}.txt"
    file=$(find "${fileName}"* 2>&1|grep -v find)
    #
    # append a counter to the file so that the number of same error is logged
    if [ -f "${file}" ]; then
-      getFileStaeStatDt "${file}"
-      if [ "${dt}" -lt 600 ]; then
-         count=$(echo "${file}" | cut -d'#' -f2)
-         count=$((count + 1))
-      fi
-      rm -f "${file}"
+      count=$(echo "${file}" | cut -d'#' -f2)
+      count=$((count + 1))
+   else
+      count=1
    fi
+   rm -f "${file}"
    #
    fileName="${fileName}#${count}"
    { echo "$io $device $characteristic"
@@ -100,13 +95,13 @@ function logError()
    } > "$fileName"
    #
    if [ "${io}" = "Set" ]; then
-      logBondBridgeDiagnostic "Unhandled $io $device $characteristic $value rc=$rc, accessory is most likely inaccessible"
+      logBBdiagnostic "Unhandled $io $device $characteristic $value rc=$rc, accessory is most likely inaccessible"
    else
-      logBondBridgeDiagnostic "Unhandled $io $device $characteristic rc=$rc, accessory is most likely inaccessible"
+      logBBdiagnostic "Unhandled $io $device $characteristic rc=$rc, accessory is most likely inaccessible"
    fi
 }
 
-function logBondBridgeDiagnostic()
+function logBBdiagnostic()
 {
    if [ "$debugSpecified" != true ]; then
       return
@@ -121,78 +116,64 @@ function logBondBridgeDiagnostic()
    fi
 }
 
-function getFileStatDt()
-{
-   local fileName="$1"
-   # This script is to determine the time of a file using 'stat'
-   # command and calculate the age of the file in seconds
-   # The return variables of this script:
-   #    tf = last changed time of the file since Epoch
-   #    t0 = current time since Epoch
-   #    dt = the age of the file in seconds since last changed
-   case "$OSTYPE" in
-      darwin*)
-         tf=$( stat -r "$fileName" | awk '{print $11}' )  # for Mac users
-      ;;
-      *)
-         tf=$( stat -c %Z "$fileName" )
-      ;;
-   esac
-   t0=$(date '+%s')
-   dt=$((t0 - tf))
-}
-
 function queryBondBridge()
 {
    local Device="$1"
-   if [ -n "$2" ];then queryType="$2"; fi 
+   local queryType="$2" 
+   local ioType="GET"
+   local name
 
-   local stateFile=""
-   local stateDateFile=""
-
-   if [ -n "$Device" ]; then 
-      stateFile="$(echo "${BONDBRIDGE_STATE_FILE}"|cut -d '.' -f-2).${Device}"
-   else
+   if [ -z "$Device" ]; then 
       Device="${bondDevice}"
-      stateFile="${BONDBRIDGE_STATE_FILE}"
    fi
 
-   stateDateFile="${stateFile}.date"
+   name=$( echo "${device}" | sed -E 's/ (Timer|Dimmer)$//' )
 
-   if [[ -f "${stateDateFile}" && "${queryType}" != "fetch" ]]; then
-      getFileStatDt "${stateDateFile}"
-      if [ "$dt" -le 120 ]; then queryType="copy1"; fi
+   if [ -f "${BONDBRIDGE_STATE_FILE}" ]; then
+      state=$( jq -c "." "${BONDBRIDGE_STATE_FILE}")
+      cachedDeviceState=$( echo "${state}" | jq -c ".B${Device}" )
+   else
+      state="{}"
+   fi
+
+   if [[ "${cachedDeviceState}" != "null" && "${state}" != "{}" && "${queryType}" != "fetch" ]]; then
+      queryType="copy "
+   else
+      queryType="fetch"
    fi  
 
-   if [ "$queryType" = "copy1" ]; then
-      state=$(jq -ec '.' "${stateFile}")
+   #Calculate some basic info for the diagnostic
+   tf=$( echo "$state" | jq ".B${Device}.lastFetched" )
+   dt=$(( t0 - tf ))
+   
+   if [ "$queryType" = "fetch" ]; then
+
+      # log the fetch instances
+      # debugSpecified=true
+
+      deviceState=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IP}"/v2/devices/"${Device}"/state)
       rc=$?
-   else
-      state=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IP}"/v2/devices/"${Device}"/state)
-      properties=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IP}"/v2/devices/"${Device}"/properties)
-      rc=$?
-      state=$(jq -ec --slurp 'add' <(echo "$state") <(echo "$properties"))
-      state=$(echo "$state"|jq -c '{power, speed, max_speed, light}')
       if [ "$rc" != "0" ]; then
          logError "curl failed" "${state}" "${Device}/state" ""
          exit "${rc}"
       fi
-      if [ -f "$stateFile" ]; then cachedState=$(cat "${stateFile}"); fi
-      if [ "${state}" != "${cachedState}" ]; then
-         echo "${state}" > "${stateFile}" 
-         queryType="fetch"
-      fi
-      touch "${stateDateFile}"
+      deviceProperties=$(curl -s -g -H "BOND-Token: ${bondToken}" http://"${IP}"/v2/devices/"${Device}"/properties)
+      deviceState=$( jq -c --slurp 'add' <(echo "{\"name\":\"${name}\"}") <(echo "$deviceState") <(echo "$deviceProperties") <(echo "{\"lastFetched\":$t0}") )
+      deviceState=$( echo "${deviceState}"  |jq -c '{name, power, speed, max_speed, light, lastFetched}' )
+      state=$( echo "${state}" | jq -c ".B${Device} |= ${deviceState}" )
+      echo "${state}" > "${BONDBRIDGE_STATE_FILE}" 
    fi
 
-   power=$(echo "$state" | jq -e ".power")
-   speed=$(echo "$state" | jq -e ".speed")
-   max_speed=$(echo "$state" | jq -e ".max_speed")
-   light=$(echo "$state" | jq -e ".light")
+   power=$( echo "$state"     | jq ".B${Device}.power" )
+   speed=$( echo "$state"     | jq ".B${Device}.speed" )
+   max_speed=$( echo "$state" | jq ".B${Device}.max_speed" )
+   light=$( echo "$state"     | jq ".B${Device}.light" )
 
    # Diagnostic logging
-   log=$(printf "BondBridge_${Device}_${ioType} %10s $t0 %3s $queryType $rc $io $device $characteristic" "$tf" "$dt")
-   logBondBridgeDiagnostic "$log"
+   tm0=$( date -d @"$t0" | cut -d" " -f4 )
+   tmf="+++ $( date -d @"$tf" | cut -d" " -f4 )"
+   log=$(printf "BondBridge_${Device}_${ioType} %12s %8s %5s $queryType $rc $io $device $characteristic" "$tmf" "$tm0" "$dt")
+   logBBdiagnostic "$log"
 }
 
 function setBondBridge()
@@ -200,6 +181,7 @@ function setBondBridge()
    local Device="$1"
    local action="$2"
    local argument="$3"
+   local ioType="PUT"
 
    if [ -z "${Device}" ]; then Device="${bondDevice}"; fi
 
@@ -207,8 +189,9 @@ function setBondBridge()
    rc=$?
 
    # Diagnostic logging
-   log=$(printf "BondBridge_${Device}_${ioType} ++++++++++ $t0 %3s +++++ $rc $io $device $characteristic $value ${action}: $speed" "0")
-   logBondBridgeDiagnostic "$log"
+   tm0=$( date -d @"$t0" | cut -d" " -f4 )
+   log=$(printf "BondBridge_${Device}_${ioType} ++++++++++++ %8s %5s +++++ $rc $io $device $characteristic $value ${action}: $speed" "$tm0" "0")
+   logBBdiagnostic "$log"
 
    if [ "$rc" != "0" ]; then
       logError "curl failed" "${state}" "${Device}/actions" "${action} -X PUT -d \"{${argument}}\""
@@ -219,46 +202,48 @@ function setBondBridge()
 function updateBondBridgeStateFile()
 {
    local Device="$1"
-   local stateFile=""
+   local action="$2"
+   local value="$3"
+   local ioType="UPD"         
 
-   if [ -n "${Device}" ]; then
-      stateFile="$(echo "${BONDBRIDGE_STATE_FILE}"|cut -d '.' -f-2).${Device}"
-   else
-      Device="${bondDevice}"
-      stateFile="${BONDBRIDGE_STATE_FILE}"
-   fi
 
-   updatedState=$(jq -ec ".power=$power" "${stateFile}" | jq -ec ".speed=$speed" | jq -ec ".light=$light")
-   echo "$updatedState" > "${stateFile}"
+   if [ -z "${Device}" ]; then Device="${bondDevice}"; fi
+
+   updatedState=$( jq -c ".B${Device}.power       |= $power" "${BONDBRIDGE_STATE_FILE}" \
+                 | jq -c ".B${Device}.speed       |= $speed" \
+                 | jq -c ".B${Device}.light       |= $light" \
+                 | jq -c ".B${Device}.lastFetched |= $t0" )
+   echo "$updatedState" > "${BONDBRIDGE_STATE_FILE}"
+
+   tm0=$( date -d @"$t0" | cut -d" " -f4 )
+   log=$(printf "BondBridge_${Device}_${ioType} ++++++++++++ %8s %5s +++++ $rc $io $device $characteristic ${action}: ${value}" "$tm0" "0")
+   logBBdiagnostic "$log" 
 }
 
 function queryTimerStateFile()
 {
-   local Device="$1"
-   local rc=0
+   local ioType="GET"
 
-   if [ -n "$2" ]; then
-      queryType="$2"
+   if [ -f "$BONDBRIDGE_TIMER_STATE_FILE" ]; then
+      state=$( jq -c "." "${BONDBRIDGE_TIMER_STATE_FILE}" )
+      deviceState=$( echo "${state}" | jq -c ".T${bondDevice}" )
+   else
+      state="{}"
    fi
-
-   if [ -f "$BONDBRIDGE_STATE_FILE" ]; then
-      state=$(jq -ec '.' "${BONDBRIDGE_STATE_FILE}")
-      rc=$?
-   fi
-   if [[ "${rc}" != "0" || -z "$state" ]]; then
-      state="{\"timeToOn\":0,\"timeToOff\":0,\"setTime\":0}"
-      echo "$state" > "$BONDBRIDGE_STATE_FILE"
+   if [[ "${deviceState}" = "null" || "${state}" = "{}" ]]; then
+      deviceState="{\"name\":\"${device}\",\"timeToOn\":0,\"timeToOff\":0,\"setTime\":0}"
+      state=$( echo "${state}" | jq -c ".T${bondDevice} |= ${deviceState}" )
+      echo "${state}" > "$BONDBRIDGE_TIMER_STATE_FILE"
    fi 
 
-   timeToOn=$(echo "$state" | jq -e ".timeToOn")
-   timeToOff=$(echo "$state" | jq -e ".timeToOff")
-   setTime=$(echo "$state" | jq -e ".setTime")
+   timeToOn=$(echo "$state"  | jq ".T${bondDevice}.timeToOn")
+   timeToOff=$(echo "$state" | jq ".T${bondDevice}.timeToOff")
+   setTime=$(echo "$state"   | jq ".T${bondDevice}.setTime")
 
-   log=$(printf "BondBridge_${bondDevice}_${ioType} %10s $t0 %03s timer $rc $io $device $characteristic" "$tf" "$dt") 
-   logBondBridgeDiagnostic "$log" 
-
-   # Get the state of the associated fan or light device
-   queryBondBridge "${Device}" "${queryType}"
+   tm0=$( date -d @"$t0" | cut -d" " -f4 )
+   tmf="+++ $( date -d @"$tf" | cut -d" " -f4 )"
+   log=$(printf "BondBridge_${bondDevice}_${ioType} %12s %8s %5s timer $rc $io $device $characteristic" "$tmf" "$tm0" "$dt") 
+   logBBdiagnostic "$log" 
 }
 
 function updateTimers()
@@ -279,7 +264,7 @@ function updateTimers()
          if [ "$timeToOff" = "0" ]; then # turn off the fan
             power=0
             setBondBridge "${fanDevice}" "TurnOff"
-            updateBondBridgeStateFile "${fanDevice}"
+            updateBondBridgeStateFile "${fanDevice}" "TurnOff" ""
          fi
       elif [[ "$power" = "0" && "$timeToOff" != "0" ]]; then # reset timer 
          timeToOff=0
@@ -293,7 +278,7 @@ function updateTimers()
          if [ "$timeToOn" = "0" ]; then # turn on the fan
             power=1
             setBondBridge "${fanDevice}" "TurnOn"
-            updateBondBridgeStateFile "${fanDevice}"
+            updateBondBridgeStateFile "${fanDevice}" "TurnOn" ""
          fi
       fi
    fi
@@ -314,7 +299,7 @@ function updateTimers()
          if [ "$timeToOff" = "0" ]; then # turn off the light
             light=0
             setBondBridge "${lightDevice}" "TurnLightOff"
-            updateBondBridgeStateFile "${lightDevice}"
+            updateBondBridgeStateFile "${lightDevice}" "TurnLightOff" ""
          fi
       elif [[ "$light" = "0" && "$timeToOff" != "0" ]]; then # reset timer        
          timeToOff=0
@@ -328,7 +313,7 @@ function updateTimers()
          if [ "$timeToOn" = "0" ]; then # turn on the light
             light=1
             setBondBridge "${lightDevice}" "TurnLightOn"
-            updateBondBridgeStateFile "${lightDevice}"
+            updateBondBridgeStateFile "${lightDevice}" "TurnLightOn" ""
          fi
       fi
    fi
@@ -336,12 +321,16 @@ function updateTimers()
 
 function updateTimerStateFile()
 {
-   updatedState=$(jq -ec ".timeToOn=$timeToOn" "$BONDBRIDGE_STATE_FILE" | jq -ec ".timeToOff=$timeToOff" | jq -ec ".setTime=$setTime")
-   rc=$?
-   echo "$updatedState" > "$BONDBRIDGE_STATE_FILE"
+   local ioType="UPD"
+
+   updatedState=$( jq -c ".T${bondDevice}.timeToOn  |= $timeToOn" "$BONDBRIDGE_TIMER_STATE_FILE" \
+                 | jq -c ".T${bondDevice}.timeToOff |= $timeToOff" \
+                 | jq -c ".T${bondDevice}.setTime   |= $setTime" )
+   echo "${updatedState}" > "$BONDBRIDGE_TIMER_STATE_FILE"
    # Diagnostic logging
-   log=$(printf "BondBridge_${bondDevice}_${ioType} %5s%5s $t0 %3s timer $rc $io $device $characteristic" "$timeToOn" "$timeToOff" "0") 
-   logBondBridgeDiagnostic "$log" 
+   tm0=$( date -d @"$t0" | cut -d" " -f4 )
+   log=$(printf "BondBridge_${bondDevice}_${ioType} %-6s%6s %8s %5s timer $rc $io $device $characteristic" "$timeToOn" "$timeToOff" "$tm0" "0") 
+   logBBdiagnostic "$log" 
 }
 
 # main starts here
@@ -451,7 +440,8 @@ tmpSubDir=$( printf "${TMPDIR}/BB-%03d" "$subDir" )
 if [ ! -d "${tmpSubDir}/" ]; then mkdir "${tmpSubDir}/"; fi
 
 # Redefine temporary files with full path
-BONDBRIDGE_STATE_FILE="${tmpSubDir}/${BONDBRIDGE_STATE_FILE}.${bondDevice}"
+BONDBRIDGE_STATE_FILE="${tmpSubDir}/${BONDBRIDGE_STATE_FILE}"
+BONDBRIDGE_TIMER_STATE_FILE="${tmpSubDir}/${BONDBRIDGE_TIMER_STATE_FILE}"
 BONDBRIDGE_LOG_FILE="${tmpSubDir}/${BONDBRIDGE_LOG_FILE}"
 #
 
@@ -464,9 +454,11 @@ ioType="GET"
 
 # Get the ${BONDBRIDGE_STATE_FILE}
 if [[ $lightTimerSpecified = true ]]; then
-   queryTimerStateFile "${lightDevice}"
+   queryBondBridge "${lightDevice}"
+   queryTimerStateFile
 elif [[ $fanTimerSpecified = true ]]; then
-   queryTimerStateFile "${fanDevice}"
+   queryBondBridge "${fanDevice}"
+   queryTimerStateFile
 else
    queryBondBridge
    speed_interval=$((100 / max_speed))
@@ -536,15 +528,11 @@ fi
 # For "Set" Directives
 if [ "$io" = "Set" ]; then
 
-   ioType="PUT"
-
-
    case "$characteristic" in
       On )
          # Dimmer is only used in conjuction with Home Assistant light switch.
          # require Homekit automation to turn on/off the Dimmer when the HA light switch is turned on/off
          if [ $dimmerSpecified = true ]; then # update the $state of the device from Bond Bridge 
-            ioType="UPD"
             queryBondBridge "${bondDevice}" "fetch"
             exit 0 
          fi 
@@ -554,32 +542,33 @@ if [ "$io" = "Set" ]; then
             queryBondBridge
             if [ "$value" = "1" ]; then
                if [ "${power}" = "0" ]; then
-                  setBondBridge "" "TurnOn"
+                  action="TurnOn"
                   power=1
                fi
             else
-               setBondBridge "" "TurnOff"
+               action="TurnOff"
                power=0
             fi
-            updateBondBridgeStateFile
+            setBondBridge "" "${action}"
+            updateBondBridgeStateFile "" "${action}"
             exit 0
          # setting the state of the light 
          elif [ $lightSpecified = true ]; then
             queryBondBridge
             if [ "$value" = "1" ]; then
                if [ "${light}" = "0" ]; then
-                  setBondBridge "" "TurnLightOn"
+                  action="TurnLightOn"
                   light=1
                fi
             else
-               setBondBridge "" "TurnLightOff"
+               action="TurnLightOff"
                light=0
             fi
-            updateBondBridgeStateFile
+            setBondBridge "" "${action}"
+            updateBondBridgeStateFile "" "${action}"
             exit 0
          # setting the state of the fan timer   
          elif [[ $fanTimerSpecified = true || $lightTimerSpecified ]]; then
-            ioType="UPD"
             if [ "$value" = "1" ]; then # do nothing
                exit 0
             else
@@ -587,6 +576,11 @@ if [ "$io" = "Set" ]; then
                timeToOff=0
                setTime=${t0}
                updateTimerStateFile
+               if [ $fanTimerSpecified = true ]; then
+                  # query the state of the fan as the fan was turned on or off
+                  # by Home Assistant
+                  queryBondBridge "${fanDevice}" "fetch"
+               fi
                exit 0
             fi
          fi
@@ -599,11 +593,11 @@ if [ "$io" = "Set" ]; then
             # calculate speed or brightness (1, 2, 3, 4, etc) based on $value & speed_interval
             speed=$(((value - 1) / speed_interval + 1))
             setBondBridge "" "SetSpeed" "\"argument\": ${speed}"
-            updateBondBridgeStateFile
+            updateBondBridgeStateFile "" "SetSpeed" "S{speed}"
             exit 0
          elif [ $fanTimerSpecified = true ]; then
-            ioType="UPD"
-            queryTimerStateFile "${fanDevice}" "fetch"
+            queryBondBridge "${fanDevice}" "fetch"
+            queryTimerStateFile
             if [ "$power" = "1" ]; then
                timeToOff=$((value * 360))
                timeToOn=0
@@ -619,8 +613,8 @@ if [ "$io" = "Set" ]; then
             fi
             exit 0
          elif [ $lightTimerSpecified = true ]; then
-            ioType="UPD"
-            queryTimerStateFile "${lightDevice}" "fetch"
+            queryBondBridge "${lightDevice}" "fetch"
+            queryTimerStateFile
             if [ "$light" = "1" ]; then
                timeToOff=$((value * 360))
                timeToOn=0
@@ -646,7 +640,7 @@ if [ "$io" = "Set" ]; then
             speed=$(((value - 1) / speed_interval + 1))
             power=1  # It was built-in in BondBridge that if the speed is set, the fan will turn on anyway!
             setBondBridge "" "SetSpeed" "\"argument\": ${speed}"
-            updateBondBridgeStateFile
+            updateBondBridgeStateFile "" "SetSpeed" "${speed}"
             exit 0
          fi
       ;;
