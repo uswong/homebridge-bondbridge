@@ -1,7 +1,7 @@
 <span align="center">
      
 <p align="center">
-<img src="homebridge-ui/public/images/BondBridge.png" width="220">
+<img src="homebridge-ui/public/images/Homebridge-bondbridge.png" width="300">
 </p>
 
 # homebridge-bondbridge
