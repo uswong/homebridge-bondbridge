@@ -1,5 +1,19 @@
+<span align="center">
+     
+<p align="center">
+<img src="homebridge-ui/public/images/BondBridge.png" width="220">
+</p>
+
 # homebridge-bondbridge
+
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+[![homebridge-bondbridge](https://badgen.net/npm/v/homebridge-mbondbridge?icon=npm)](https://www.npmjs.com/package/homebridge-bondbridge)
+[![npm](https://badgen.net/npm/dt/homebridge-bondbridge?label=downloads)](https://www.npmjs.com/package/homebridge-bondbridge)
+[![mit-license](https://badgen.net/npm/license/lodash)](https://github.com/uswong/homebridge-bondbridge/blob/master/LICENSE)
+
 This plugin is to bring your <B>Ceiling Fan with Dimmable Light</B> that is fitted with a RF remote control to Homekit via **Bond Bridge RF Controller**
+
+</span>
 
 ## Introduction
 
