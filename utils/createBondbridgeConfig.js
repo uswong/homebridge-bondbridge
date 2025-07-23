@@ -289,7 +289,7 @@ async function main() {
   const bondbridgeConfig = assembleBondBridgeConfig();
 
   console.log("DONE! createBondBridgeConfig completed successfully!");
-  console.log(JSON.stringify(bondbridgeConfig, null, 2));
+  console.log(JSON.stringify(bondbridgeConfig));
 
   process.exit(0);
 }
