@@ -7,7 +7,7 @@
 # homebridge-bondbridge
 
 [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
-[![homebridge-bondbridge](https://badgen.net/npm/v/homebridge-mbondbridge?icon=npm)](https://www.npmjs.com/package/homebridge-bondbridge)
+[![homebridge-bondbridge](https://badgen.net/npm/v/homebridge-bondbridge?icon=npm)](https://www.npmjs.com/package/homebridge-bondbridge)
 [![npm](https://badgen.net/npm/dt/homebridge-bondbridge?label=downloads)](https://www.npmjs.com/package/homebridge-bondbridge)
 [![mit-license](https://badgen.net/npm/license/lodash)](https://github.com/uswong/homebridge-bondbridge/blob/master/LICENSE)
 
@@ -47,9 +47,9 @@ This plugin does not use the built-in timers but use custom-built timers within 
 
 Fill up the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu*, check/uncheck the `Include timers` checkbox, click `SAVE` then `RESTART`.
 
-![BondBridge_Setup_UI](https://github.com/user-attachments/assets/3229bd6a-4016-49ba-ba35-c0eed3f8c63c)
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/9efaa9ee-de4f-475d-a620-bcdb521afa0a" />
 
-*The `Ceiling Fan Setup Option` from a drop down menu` has the following options:
+*The `Ceiling Fan Setup Option` from a drop down menu has the following options:
 1. Configure a Ceiling fan with SpeedControl [`fan`]
 2. Configure a Ceiling fan with SpeedControl and a Light switch [`fanLight`]
 3. Configure a Ceiling fan with SpeedControl and a Light with Dimmer [`fanLightDimmer`]
