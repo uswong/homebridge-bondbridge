@@ -466,7 +466,7 @@ fi
 
    case "$characteristic" in
       On )
-         if [[ $lightSpecified = true || $dimmerSpecified = true ]]; then # it should be On only when the light is on       
+         if [[ $lightSpecified = true || $dimmerSpecified = true ]]; then # it should be On only when the light is on
             if [ "${light}" = "1" ]; then
                echo 1
                exit 0
@@ -482,25 +482,25 @@ fi
                echo 0
                exit 0
             fi
-         elif [ $fanTimerSpecified = true ]; then 
-            if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then 
+         elif [ $fanTimerSpecified = true ]; then
+            if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then
                echo 0
                exit 0
-            elif [[ "$power" = "1" && "$timeToOff" != "0" ]]; then 
+            elif [[ "$power" = "1" && "$timeToOff" != "0" ]]; then
                echo 1
                exit 0
-            elif [[ "$power" = "0" && "$timeToOn" != "0" ]]; then 
+            elif [[ "$power" = "0" && "$timeToOn" != "0" ]]; then
                echo 1
                exit 0
             fi
-         elif [ $lightTimerSpecified = true ]; then 
-            if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then 
+         elif [ $lightTimerSpecified = true ]; then
+            if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then
                echo 0
                exit 0
-            elif [[ "$light" = "1" && "$timeToOff" != "0" ]]; then 
+            elif [[ "$light" = "1" && "$timeToOff" != "0" ]]; then
                echo 1
                exit 0
-            elif [[ "$light" = "0" && "$timeToOn" != "0" ]]; then 
+            elif [[ "$light" = "0" && "$timeToOn" != "0" ]]; then
                echo 1
                exit 0
             fi
@@ -508,18 +508,18 @@ fi
       ;;
       Brightness )
          if [[ $lightSpecified = true || $dimmerSpecified = true ]]; then
-            echo $((speed * 14))
+            echo $((speed * speed_interval))
             exit 0
          elif [[ $fanTimerSpecified = true || $lightTimerSpecified = true ]]; then
             updateTimers
             value=$((timeToOn > timeToOff? timeToOn : timeToOff))
             value=$(((value / 360) + (value % 360 > 0)))
-            echo $((value > 1? value : 1)) 
+            echo $((value > 1? value : 1))
             exit 0
          fi
       ;;
       RotationSpeed )
-         echo $((speed * 25))
+         echo $((speed * speed_interval))
          exit 0
       ;;
    esac
@@ -532,12 +532,12 @@ if [ "$io" = "Set" ]; then
       On )
          # Dimmer is only used in conjuction with Home Assistant light switch.
          # require Homekit automation to turn on/off the Dimmer when the HA light switch is turned on/off
-         if [ $dimmerSpecified = true ]; then # update the $state of the device from Bond Bridge 
+         if [ $dimmerSpecified = true ]; then # update the $state of the device from Bond Bridge
             queryBondBridge "${bondDevice}" "fetch"
-            exit 0 
-         fi 
+            exit 0
+         fi
          # for a full setup of fan and light, the followings are used
-         # setting the state of the fan   
+         # setting the state of the fan
           if [ "$fanSpecified" = true ]; then
             queryBondBridge
             if [ "$value" = "1" ]; then
@@ -552,7 +552,7 @@ if [ "$io" = "Set" ]; then
             setBondBridge "" "${action}"
             updateBondBridgeStateFile "" "${action}"
             exit 0
-         # setting the state of the light 
+         # setting the state of the light
          elif [ $lightSpecified = true ]; then
             queryBondBridge
             if [ "$value" = "1" ]; then
@@ -567,7 +567,7 @@ if [ "$io" = "Set" ]; then
             setBondBridge "" "${action}"
             updateBondBridgeStateFile "" "${action}"
             exit 0
-         # setting the state of the fan timer   
+         # setting the state of the fan timer
          elif [[ $fanTimerSpecified = true || $lightTimerSpecified ]]; then
             if [ "$value" = "1" ]; then # do nothing
                exit 0
@@ -585,7 +585,7 @@ if [ "$io" = "Set" ]; then
             fi
          fi
       ;;
-      #Light Bulb service for used controlling brightness of light     
+      #Light Bulb service for used controlling brightness of light
       Brightness )
          if [[ $lightSpecified = true || $dimmerSpecified = true ]]; then
             queryBondBridge
@@ -631,7 +631,7 @@ if [ "$io" = "Set" ]; then
             exit 0
          fi
       ;;
-      # fan speed 
+      # fan speed
       RotationSpeed )
          if [ $fanSpecified = true ]; then
             queryBondBridge "${bondDevice}" "fetch"
