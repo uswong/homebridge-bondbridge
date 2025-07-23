@@ -1,5 +1,5 @@
 <span align="center">
-     
+
 <p align="center">
 <img src="homebridge-ui/public/images/Homebridge-bondbridge.png" width="300">
 </p>
@@ -41,7 +41,7 @@ This plugin does not use the built-in timers but use custom-built timers within 
 1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
 2. Make sure that <B>jq</B> and <B>curl</B> are installed on your system. Install <B>jq-1.7</B> if you can, it is much faster than <B>jq-1.6</B>
 3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
-      
+
 ## Configuring the Plugin
 (A) Users who have access to the Homebridge web UI can go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Device Settings</B> UI.
 
@@ -96,4 +96,3 @@ The Timers are custom-built timers and used 'Lightbulb' accessory as a proxy and
    
 ## LICENSE
 This plugin is distributed under the MIT license. See [LICENSE](https://github.com/uswong/homebridge-myplace/blob/main/LICENSE) for details.
-
