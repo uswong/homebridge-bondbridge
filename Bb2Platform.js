@@ -171,7 +171,7 @@ class Bb2Platform
             if (status && status.includes('DONE')) {
                   this.config = JSON.parse(jsonText);
                   this.log.info(status);
-                  this.log.debug('Updated config:\n' + JSON.stringify(this.config, null, 2));
+                  this.log.debug('Updated config:\n' + JSON.stringify(this.config));
             } else {
                this.log.warn('WARNING: Errors eccountered running createBondBridgeConfig:', status || 'No status line returned');
                this.log.warn('Proceed with original config — no accessories will be created.');
