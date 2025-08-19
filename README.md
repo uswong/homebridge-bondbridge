@@ -58,14 +58,14 @@ Fill up the `IP Address` and `Local Token` of your Bond Bridge device, check/unc
 
 The key words within the square brackets are the possible values to the `setupOption` in the config.json (see example below).
 
-(B) Users who do not have access to Homebridge UI need to make sure that the homebridge config.json contain the following:
+(B) Users who do not have access to Homebridge UI need to make sure that the homebridge config.json contain a BondBridge config looks like the following:
 ```shell
 {
     "name": "BondBridge",
     "devices": [
         {
-            "ipAddress": "192.168.50.28",
-            "token": "df60c5b500bcd518",
+            "ipAddress": "<your Bond Bridge ip address>",
+            "token": "<your Bond Bridge Local Token>",
             "debug": false,
             "CFsettings": {
                 "setupOption": "lightDimmer",
