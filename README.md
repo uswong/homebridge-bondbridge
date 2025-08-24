@@ -17,9 +17,9 @@ This plugin is to bring your <B>Ceiling Fan with Dimmable Light</B> that is fitt
 
 ## Introduction
 
-This `homebridge-bondbridge` plugin is specially designed to bring <B>Ceiling Fans with Dimmable Light</B> that is fitted with a RF remote control to Homekit via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)**. The RF remote control I am having here is **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below).  Any ceiling fan that is fitted with a RF remote control and has a dimmable Light should be able to take advantage of this plugin.
+This `homebridge-bondbridge` plugin is specially designed to bring <B>Ceiling Fans with multi-tiers Dimmable Light</B> that is fitted with a RF remote control to Homekit via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)**. The RF remote control I am having here is **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below).  Any ceiling fan that is fitted with a RF remote control and has a multi-tiers dimmable Light should be able to take advantage of this plugin.
 
-However, if you can find your ceiling fan in the Bond Bridge database, then you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
+However, if your ceiling fan does not have a multi-tiers dimmer or it can be found in the Bond Bridge database, then you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
@@ -29,7 +29,7 @@ To work as intended, the RF remote control functions need to be programmed onto 
 
      Note that the Fan Speed has intrinsic "On" function, as such the "Fan On" function is not required, only the "Fan Off" function need to be programmed.  No harm done also if you do programme both "On/Off" functions.
 
-2. Add another **"Ceiling Fan"** device onto Bond Bridge RF Controller and programme the `Light On/Off` functions under "Light" and programme the `Light Dimmer` functions under "Fan" as "Fan Speed". For example, the LOGIC RF remote control has 7-levels dimmer, you should programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. "Bed 4 Light").
+2. Add another **"Ceiling Fan"** device onto Bond Bridge RF Controller and programme the `Light On/Off` functions under "Light" and programme the multi-tiers `Light Dimmer` functions under "Fan" as "Fan Speed". For example, the LOGIC RF remote control has 7-levels dimmer, you should programme them as "Speed 1", "Speed 2", etc.  Name this device ending with " Light" (e.g. "Bed 4 Light").
 
 
      ![image](https://user-images.githubusercontent.com/96530237/226813380-1a867f56-61a5-42b8-ad10-5deeb7ac44f5.png)
