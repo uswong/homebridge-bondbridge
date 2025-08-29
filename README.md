@@ -19,7 +19,7 @@ This plugin is to bring your <B>Ceiling Fan with multi-tiers Dimmable Light</B> 
 
 This `homebridge-bondbridge` plugin is specifically designed to bring <B>Ceiling Fans with multi-tiers Dimmable Light</B> that is fitted with a RF remote control to Homekit via **[Bond Bridge RF Controller](https://bondhome.io/product/bond-bridge/)**. If your ceiling fan does not have a multi-tiers dimmer, then you should use the **[homebridge-bond](https://github.com/aarons22/homebridge-bond)** plugin instead.
 
-The RF remote control I am having here is **[Hunter Pacific LOGIC remote control A2003](https://www.hunterpacificinternational.com/remotes)** (left image below).  Any ceiling fan that is fitted with a RF remote control and has a multi-tiers dimmable Light should be able to take advantage of this plugin by following strictly the following rules in programming your RF remote control functions onto your Bond Bridge RF Controller.
+The RF remote control I am having here is **Hunter Pacific LOGIC remote control A2003** (left image below).  Any ceiling fan that is fitted with a RF remote control and has a multi-tiers dimmable Light should be able to take advantage of this plugin by following strictly the following rules in programming your RF remote control functions onto your Bond Bridge RF Controller.
 
 ![image](https://user-images.githubusercontent.com/96530237/224465046-3ee8211e-c92c-4c8f-9119-77256fd9e0e9.png)![image](https://user-images.githubusercontent.com/96530237/226806633-a846876d-af1b-4b49-8417-a9cc919da790.png)
 
