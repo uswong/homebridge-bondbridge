@@ -159,14 +159,10 @@ class Bb2Platform
             this.log.debug('Running script:', scriptPath, args);
 
             // const result = spawnSync(scriptPath, args, { encoding: 'utf8' });
-            const result = spawnSync('node', [scriptPath, ...args], { encoding: 'utf8' });
-            const feedback = result.stdout.trim();
+            const result = spawnSync('node', [scriptPath, ...args], { encoding: 'utf8', maxBuffer: 5 * 1024 * 1024 });
 
-            this.log.debug(feedback);
-
-            const lines = feedback.split('\n');
-            const status = lines.shift();
-            const jsonText = lines.join('\n').trim();
+            const status = result.stderr.trim();
+            const jsonText = result.stdout.trim();
 
             if (status && status.includes('DONE')) {
                   this.config = JSON.parse(jsonText);
