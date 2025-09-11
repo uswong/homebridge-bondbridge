@@ -1,5 +1,5 @@
 ### Homebridges-Bondbridge - An independent plugin for Homebridge bringing Hunter Pacific Ceiling Fan LOGIC Remote Control to Homekit via Bond Bridge
 
-##### v2.3.0 (27-06-2025)
-###### (1) Simplified the setup procedure
-###### (2) Made it independent of other plugins
+##### v2.3.2 (11-09-2025)
+###### (1) Increased maxBuffer for spawnSyn to 5 MB
+###### (2) Added debugging switch for the plugin
