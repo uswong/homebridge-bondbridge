@@ -45,9 +45,11 @@ This plugin does not use the built-in timers but use custom-built timers within 
 ## Configuring the Plugin
 (A) Users who have access to the Homebridge web UI can go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Device Settings</B> UI.
 
-Fill up the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu*, check/uncheck the `Include timers` checkbox, click `SAVE` then `RESTART`.
+Fill up the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log for this device` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu*, check/uncheck the `Include timers` checkbox, click `SAVE` then `RESTART`.
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/9efaa9ee-de4f-475d-a620-bcdb521afa0a" />
+For advanced users, you can check/uncheck the `Enable detailed debug log for this plugin` under <B>Global Plugin Settings</B> to turned on the debugging log to diagnostic any issue with the plugin.
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/03e2c4b7-3da2-4bd4-96a6-e3106dd5ff9e" />
 
 *The `Ceiling Fan Setup Option` from a drop down menu has the following options:
 1. Configure a Ceiling fan with SpeedControl [`fan`]
@@ -62,6 +64,7 @@ The key words within the square brackets are the possible values to the `setupOp
 ```shell
 {
     "name": "BondBridge",
+    "debug": false,
     "devices": [
         {
             "ipAddress": "<your Bond Bridge ip address>",
