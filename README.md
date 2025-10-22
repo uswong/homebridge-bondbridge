@@ -38,12 +38,12 @@ To work as intended, the RF remote control functions need to be programmed onto 
 This plugin does not use the built-in timers but use custom-built timers within a bash script. These custom-built timers have greater flexibility and capability to turn on or off the fan and the light. 
 
 ## Installation
-1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs) or [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS).
+1. If you have not already, install Homebridge via these instructions for [Raspbian](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Raspbian), [HOOBS](https://support.hoobs.org/docs), [macOS](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-macOS) or [Windows](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Virtual-Machine).
 2. Make sure that <B>jq</B> and <B>curl</B> are installed on your system. Install <B>jq-1.7</B> if you can, it is much faster than <B>jq-1.6</B>
 3. Install `homebridge-bondbridge` plug-in via the Homebridge UI `Plugins` tab search function.
 
 ## Configuring the Plugin
-(A) Users who have access to the Homebridge web UI can go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Device Settings</B> UI.
+<B>(A) Users who have access to the Homebridge UI</B> can go to the 'Plugins' tab in Homebridge UI, locate your newly installed `Homebridge Bondbridge` plugin and click the three dots on the bottom right, select `Plugin Config` and it should launch the <B>Bond Bridge Device Settings</B> UI.
 
 Fill up the `IP Address` and `Local Token` of your Bond Bridge device, check/uncheck `Enable detailed debug log for this device` checkbox, then expand the `Ceiling Fan and its associated Light specific settings` and select an `Ceiling Fan Setup Option` from a drop down menu*, check/uncheck the `Include timers` checkbox, click `SAVE` then `RESTART`.
 
@@ -60,7 +60,7 @@ For advanced users, you can check/uncheck the `Enable detailed debug log for thi
 
 The key words within the square brackets are the possible values to the `setupOption` in the config.json (see example below).
 
-(B) Users who do not have access to Homebridge UI need to make sure that the homebridge config.json contain a BondBridge config looks like the following:
+<B>(B) Users who do not have access to Homebridge UI</B> need to make sure that the homebridge config.json contain a BondBridge config looks like the following:
 ```shell
 {
     "name": "BondBridge",
@@ -92,8 +92,8 @@ The Timers are custom-built timers and used 'Lightbulb' accessory as a proxy and
 * Suggest Improvements and Features you would like to see!
 
 ## Special Thanks
-1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has created the wonderful [homebridge-cmd4:-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot on **bash** and **javascript** coding in homebridge environment.
-2. Many thanks also to [John Talbot](https://github.com/ztalbot2000) for his fantastic [homebridge-cmd4](https://github.com/ztalbot2000/homebridge-cmd4) plugin with which I can do wonderful things in Homekit.
+1. Many thanks to [Mitch Williams](https://github.com/mitch7391) who has initiated the [homebridge-cmd4-AdvantageAir](https://github.com/mitch7391/homebridge-cmd4-AdvantageAir) plugin and has allowed me to participate in its development and in the process I have leant a lot about GitHub and on **bash** and **javascript** coding in homebridge environment.
+2. Many thanks also to [John Talbot](https://github.com/ztalbot2000) for his fantastic [homebridge-cmd4](https://github.com/ztalbot2000/homebridge-cmd4) plugin which I forked and reused most of the original logic, with some modifications and adjustments to meet the requirements of this plugin.
 3. And never forget to thank my beautiful wife who has put up with my obsession on this.....
 
    
