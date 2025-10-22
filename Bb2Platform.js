@@ -4,7 +4,6 @@
 const { getAccessoryName,
         getAccessoryDisplayName } = require( "./utils/getAccessoryNameFunctions" );
 const { parseAddQueueTypes } = require( "./Bb2PriorityPollingQueue" );
-const { createBondbridgeConfig } = require( "./utils/createBondbridgeConfig" );
 const { removeTempDir } = require( "./utils/removeTempDir" );
 const { updateConfig } = require( "./utils/updateConfig" );
 
@@ -38,7 +37,6 @@ const Bb2Accessory = require( "./Bb2Accessory" ).Bb2Accessory;
 // Settings, Globals and Constants
 let settings = require( "./bb2Settings" );
 const constants = require( "./bb2Constants" );
-const fs = require('fs');
 
 // Platform definition
 class Bb2Platform
