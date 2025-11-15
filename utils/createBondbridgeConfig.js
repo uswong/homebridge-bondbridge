@@ -3,193 +3,161 @@
 //
 // This script is invoked from the plugin when homebridge restart
 
-// Read CLI args
-const args = process.argv.slice(2);
+async function createBondbridgeConfig(config, IPs, log, pluginPath) {
 
-const BBIP1 = args[0];
-const BBtoken1 = args[1];
-const CFsetupOption1 = args[2];
-const CFtimerSetup1 = args[3];
-const BBdebug1 = args[4];
-const BBIP2 = args[5];
-const BBtoken2 = args[6];
-const CFsetupOption2 = args[7];
-const CFtimerSetup2 = args[8];
-const BBdebug2 = args[9];
-const BBIP3 = args[10];
-const BBtoken3 = args[11];
-const CFsetupOption3 = args[12];
-const CFtimerSetup3 = args[13];
-const BBdebug3 = args[14];
-const BONDBRIDGE_SH_PATH = args[15];
+  const path = require("path");
 
-// Globals for config parts
-let bondbridgeModelQueue = {};
-let bondbridgeConstants = { constants: [] };
-let bondbridgeQueueTypes = { queueTypes: [] };
-let bondbridgeAccessories = { accessories: [] };
+  let BONDBRIDGE_SH_PATH = path.join(pluginPath, "BondBridge.sh");
 
-// Helper: IP validation
-function isValidIp(ip) {
-  return /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(ip);
-}
+  // Globals for config parts
+  let bondbridgeModelQueue = {};
+  let bondbridgeConstants = { constants: [] };
+  let bondbridgeQueueTypes = { queueTypes: [] };
+  let bondbridgeAccessories = { accessories: [] };
 
-if (!isValidIp(BBIP1)) {
-  console.error(`ERROR: the specified IP address ${BBIP1} is in wrong format`);
-  process.exit(1);
-}
+  const noOfBondBridges = config.devices?.length;
 
-if (BBIP2 && BBIP2 !== "undefined" && !isValidIp(BBIP2)) {
-  console.error(`ERROR: the specified IP address ${BBIP2} is in wrong format`);
-  process.exit(1);
-}
+  // --- Helpers ---
+  const isValidIp = (ip) => /^(?:\d{1,3}\.){3}\d{1,3}$/.test(ip);
 
-if (BBIP3 && BBIP3 !== "undefined" && !isValidIp(BBIP3)) {
-  console.error(`ERROR: the specified IP address ${BBIP3} is in wrong format`);
-  process.exit(1);
-}
+  // Functions creating config parts
 
-const noOfBondBridges = [BBIP1, BBIP2, BBIP3].filter(ip => ip && ip !== "undefined").length;
+  function createModelQueue(model, bondid, queue) {
+    bondbridgeModelQueue = {
+      manufacturer: "OLIBRA",
+      model,
+      serialNumber: bondid,
+      queue
+    };
+  }
 
-// Functions creating config parts
+  function createConstants(IPA, ip, debug) {
+    const debugA = debug === "true" ? "-debug" : "";
+    const constant = {
+      key: IPA,
+      value: `${ip}${debugA}`
+    };
+    bondbridgeConstants.constants.push(constant);
+  }
 
-function createModelQueue(model, bondid, queue) {
-  bondbridgeModelQueue = {
-    manufacturer: "OLIBRA",
-    model,
-    serialNumber: bondid,
-    queue
-  };
-}
+  function createQueueTypes(queue) {
+    const queueType = {
+      queue: queue,
+      queueType: "WoRm2"
+    };
+    bondbridgeQueueTypes.queueTypes.push(queueType);
+  }
 
-function createConstants(IPA, ip, debug) {
-  const debugA = debug === "true" ? "-debug" : "";
-  const constant = {
-    key: IPA,
-    value: `${ip}${debugA}`
-  };
-  bondbridgeConstants.constants.push(constant);
-}
+  function createFan(name, minStep, modelQueue, bondToken, device, IPA) {
+    const fan = {
+      type: "Fan",
+      displayName: name,
+      on: false,
+      rotationSpeed: 25,
+      name,
+      ...modelQueue,
+      polling: [
+        { characteristic: "on" },
+        { characteristic: "rotationSpeed" }
+      ],
+      props: {
+        rotationSpeed: { minStep }
+      },
+      state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
+      state_cmd_suffix: `fan 'token:${bondToken}' 'device:${device}' ${IPA}`
+    };
+    bondbridgeAccessories.accessories.push(fan);
+  }
 
-function createQueueTypes(queue) {
-  queueType = {
-    queue: queue,
-    queueType: "WoRm2"
-  };
-  bondbridgeQueueTypes.queueTypes.push(queueType);
-}
+  function createLightbulbNoDimmer(name, accType, modelQueue, bondToken, device, IPA) {
+    const lightbulb = {
+      type: "Lightbulb",
+      displayName: name,
+      on: false,
+      name,
+      ...modelQueue,
+      polling: [{ characteristic: "on" }],
+      state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
+      state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${device}' ${IPA}`
+    };
+    bondbridgeAccessories.accessories.push(lightbulb);
+  }
 
-function createFan(name, minStep, modelQueue, bondToken, device, IPA) {
-  const fan = {
-    type: "Fan",
-    displayName: name,
-    on: false,
-    rotationSpeed: 25,
-    name,
-    ...modelQueue,
-    polling: [
-      { characteristic: "on" },
-      { characteristic: "rotationSpeed" }
-    ],
-    props: {
-      rotationSpeed: { minStep }
-    },
-    state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
-    state_cmd_suffix: `fan 'token:${bondToken}' 'device:${device}' ${IPA}`
-  };
-  bondbridgeAccessories.accessories.push(fan);
-}
+  function createLightbulbWithDimmer(name, accType, minStep, modelQueue, bondToken, device, IPA) {
+    const lightbulb = {
+      type: "Lightbulb",
+      displayName: name,
+      on: false,
+      brightness: 80,
+      name,
+      ...modelQueue,
+      polling: [
+        { characteristic: "on" },
+        { characteristic: "brightness" }
+      ],
+      props: {
+        brightness: { minStep }
+      },
+      state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
+      state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${device}' ${IPA}`
+    };
+    bondbridgeAccessories.accessories.push(lightbulb);
+  }
 
-function createLightbulbNoDimmer(name, accType, modelQueue, bondToken, device, IPA) {
-  const lightbulb = {
-    type: "Lightbulb",
-    displayName: name,
-    on: false,
-    name,
-    ...modelQueue,
-    polling: [{ characteristic: "on" }],
-    state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
-    state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${device}' ${IPA}`
-  };
-  bondbridgeAccessories.accessories.push(lightbulb);
-}
+  function createTimerLightbulb(name, accType, deviceType, modelQueue, bondToken, timerDevice, device, IPA) {
+    const timerLightbulb = {
+      type: "Lightbulb",
+      displayName: name,
+      on: false,
+      brightness: 0,
+      name,
+      ...modelQueue,
+      polling: [
+        { characteristic: "on" },
+        { characteristic: "brightness" }
+      ],
+      props: { brightness: { minStep: 1 } },
+      state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
+      state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${timerDevice}' '${deviceType}:${device}' ${IPA}`
+    };
+    bondbridgeAccessories.accessories.push(timerLightbulb);
+  }
 
-function createLightbulbWithDimmer(name, accType, minStep, modelQueue, bondToken, device, IPA) {
-  const lightbulb = {
-    type: "Lightbulb",
-    displayName: name,
-    on: false,
-    brightness: 80,
-    name,
-    ...modelQueue,
-    polling: [
-      { characteristic: "on" },
-      { characteristic: "brightness" }
-    ],
-    props: {
-      brightness: { minStep }
-    },
-    state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
-    state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${device}' ${IPA}`
-  };
-  bondbridgeAccessories.accessories.push(lightbulb);
-}
+  function assembleBondBridgeConfig() {
+    return {
+      name: "BondBridge",
+      ...bondbridgeConstants,
+      ...bondbridgeQueueTypes,
+      ...bondbridgeAccessories,
+      platform: "BondBridge"
+    };
+  }
 
-function createTimerLightbulb(name, accType, deviceType, modelQueue, bondToken, timerDevice, device, IPA) {
-  const timerLightbulb = {
-    type: "Lightbulb",
-    displayName: name,
-    on: false,
-    brightness: 0,
-    name,
-    ...modelQueue,
-    polling: [
-      { characteristic: "on" },
-      { characteristic: "brightness" }
-    ],
-    props: { brightness: { minStep: 1 } },
-    state_cmd: `'${BONDBRIDGE_SH_PATH}'`,
-    state_cmd_suffix: `${accType} 'token:${bondToken}' 'device:${timerDevice}' '${deviceType}:${device}' ${IPA}`
-  };
-  bondbridgeAccessories.accessories.push(timerLightbulb);
-}
+  // The main logic starts here
 
-function assembleBondBridgeConfig() {
-  return {
-    name: "BondBridge",
-    ...bondbridgeConstants,
-    ...bondbridgeQueueTypes,
-    ...bondbridgeAccessories,
-    platform: "BondBridge"
-  };
-}
+  for (let n = 0; n < noOfBondBridges; n++) {
+    const IPA = `\${BBIP${n + 1}}`;
+    const ip = IPs[n];
+    const bondToken = config.devices[n]?.token;
+    const CFsetupOption = config.devices[n]?.CFsettings.setupOption;
+    const CFtimerSetup = config.devices[n]?.CFsettings.timerSetup;
+    const debug = config.devices[n]?.debug;
+    const queue = ['BBA', 'BBB', 'BBC'][n];
 
-async function main() {
-
-  for (let n = 1; n <= noOfBondBridges; n++) {
-    const IPA = `\${BBIP${n}}`;
-    const ip = eval(`BBIP${n}`);
-    const bondToken = eval(`BBtoken${n}`);
-    const CFsetupOption = eval(`CFsetupOption${n}`);
-    const CFtimerSetup = eval(`CFtimerSetup${n}`);
-    const debug = eval(`BBdebug${n}`);
-    const queue = ['BBA', 'BBB', 'BBC'][n - 1];
+    if (!ip || ip === "undefined" || !isValidIp(ip)) continue;
 
     // Fetch version info
     let version;
     try {
-      const res = await fetch(`http://${ip}/v2/sys/version`);
-      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const res = await fetch(`http://${ip}/v2/sys/version`, { timeout: 5000 });
       version = await res.json();
     } catch (err) {
-      console.error(`ERROR: BondBridge device is inaccessible or IP ${ip} is invalid!`);
-      process.exit(1);
+      throw new Error(`ERROR: BondBridge device ${n + 1} at IP ${ip} is inaccessible. Reason: ${err.message}`);
     }
 
     const bondid = version.bondid;
     if (!bondid) {
-      console.error("ERROR: Missing bondid!");
-      process.exit(1);
+      throw new Error("ERROR: Missing bondid!");
     }
 
     const model = version.model || "";
@@ -211,8 +179,7 @@ async function main() {
       if (!devRes.ok) throw new Error(`HTTP error ${devRes.status}`);
       devicesData = await devRes.json();
     } catch (err) {
-      console.error(`ERROR: Failed to fetch devices from ${ip}`, err);
-      process.exit(1);
+      throw new Error(`ERROR: Failed to fetch devices from ${ip}`, err);
     }
 
     const deviceKeys = Object.keys(devicesData);
@@ -231,7 +198,9 @@ async function main() {
         if (!propRes.ok) throw new Error(`HTTP error ${propRes.status}`);
         const propJson = await propRes.json();
         maxSpeed = propJson.max_speed || 0;
-      } catch {}
+      } catch (err) {
+        throw new Error(`ERROR: Failed to fetch device's properties from ${ip}`, err);
+      }
 
       const speedInterval = maxSpeed ? Math.floor(100 / maxSpeed) : 0;
 
@@ -244,14 +213,16 @@ async function main() {
         if (!nameRes.ok) throw new Error(`HTTP error ${nameRes.status}`);
         const nameJson = await nameRes.json();
         name = nameJson.name || "";
-      } catch {}
+      } catch (err) {
+        throw new Error(`ERROR: Failed to fetch device name from ${ip}`, err);
+      }
 
       if (CFsetupOption !== "doNotConfigure") {
         if (/^[a-zA-Z0-9 ]*Fan$/.test(name)) {
           if (CFsetupOption !== "lightDimmer") {
             createFan(name, speedInterval, bondbridgeModelQueue, bondToken, device, IPA);
           }
-          if (CFtimerSetup === "includeTimers") {
+          if (CFtimerSetup) {
             createTimerLightbulb(`${name} Timer`, "fanTimer", "fanDevice", bondbridgeModelQueue, bondToken, timerDevice, device, IPA);
           }
         }
@@ -263,7 +234,7 @@ async function main() {
           } else if (CFsetupOption === "lightDimmer") {
             createLightbulbWithDimmer(`${name} Dimmer`, "dimmer", speedInterval, bondbridgeModelQueue, bondToken, device, IPA);
           }
-          if (CFtimerSetup === "includeTimers" && CFsetupOption !== "fan") {
+          if (CFtimerSetup && CFsetupOption !== "fan") {
             createTimerLightbulb(`${name} Timer`, "lightTimer", "lightDevice", bondbridgeModelQueue, bondToken, timerDevice, device, IPA);
           }
         }
@@ -271,12 +242,9 @@ async function main() {
     }
   }
 
+  //Assemble the final config
   const bondbridgeConfig = assembleBondBridgeConfig();
-
-  console.error("DONE! createBondBridgeConfig completed successfully!");
-  console.log(JSON.stringify(bondbridgeConfig));
-
-  process.exit(0);
+  return bondbridgeConfig;
 }
 
-main();
+module.exports = { createBondbridgeConfig };
