@@ -29,17 +29,18 @@
           "type": "object",
           "properties": {
             "ipAddress": {
-              "title": "IP Address",
-              "description": "The device's IP address. It is recommended to set a static IP for this device.",
+              "title": "Bond ID or IP Address (BondID preferred)",
+              "description": "Enter the Bond ID or local IP address.",
               "type": "string",
-              "format": "ipv4",
+              "pattern": "^(?:[A-Z0-9]{6}(?:[A-Z0-9]{3})?|(?:[0-9]{1,3}\\.){3}[0-9]{1,3})$",
               "required": true,
-              "placeholder": "192.168.0.1"
+              "errorMessage": "Must be a valid IPv4 address."
             },
             "token": {
               "title": "Local Token",
-              "description": "The token of the device. This can be found in the Bond app in your Bond Settings.",
+              "description": "Enter your Bond local token (16 or 43 characters).",
               "type": "string",
+              "pattern": "^(?:[A-Za-z0-9_-]{16}|[A-Za-z0-9_-]{43})$",
               "required": true,
               "placeholder": ""
             },
@@ -91,7 +92,7 @@
                       ]
                     }
                   ],
-                  "default": "doNotConfigure"
+                  "default": "fanLightDimmer"
                 },
                   "timerSetup": {
                   "title": "Include Timers",
@@ -130,6 +131,8 @@
             {
               "type": "fieldset",
               "title": "Celing Fan and its associated Light specific settings",
+              "expandable": true,
+              "expanded": false,
               "items": [
                 "devices[].CFsettings.setupOption",
                 "devices[].CFsettings.timerSetup"
@@ -142,6 +145,8 @@
     {
       "type": "fieldset",
       "title": "Global Plugin Settings",
+      "expandable": true,
+      "expanded": false,
       "items": [
         "debug"
       ]
