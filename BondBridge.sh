@@ -204,7 +204,7 @@ function updateBondBridgeStateFile()
    local Device="$1"
    local action="$2"
    local value="$3"
-   local ioType="UPD"         
+   local ioType="UPD"
 
 
    if [ -z "${Device}" ]; then Device="${bondDevice}"; fi
@@ -217,7 +217,7 @@ function updateBondBridgeStateFile()
 
    tm0=$( date -d @"$t0" | cut -d" " -f4 )
    log=$(printf "BondBridge_${Device}_${ioType} ++++++++++++ %8s %5s +++++ $rc $io $device $characteristic ${action}: ${value}" "$tm0" "0")
-   logBBdiagnostic "$log" 
+   logBBdiagnostic "$log"
 }
 
 function queryTimerStateFile()
@@ -225,16 +225,18 @@ function queryTimerStateFile()
    local ioType="GET"
 
    if [ -f "$BONDBRIDGE_TIMER_STATE_FILE" ]; then
-      state=$( jq -c "." "${BONDBRIDGE_TIMER_STATE_FILE}" )
-      deviceState=$( echo "${state}" | jq -c ".T${bondDevice}" )
+       state=$(jq -c "." "$BONDBRIDGE_TIMER_STATE_FILE")
+       deviceState=$(echo "$state" | jq -c ".T${bondDevice}") # This can be null
    else
-      state="{}"
+     state="{}"
+     deviceState="null"
    fi
-   if [[ "${deviceState}" = "null" || "${state}" = "{}" ]]; then
-      deviceState="{\"name\":\"${device}\",\"timeToOn\":0,\"timeToOff\":0,\"setTime\":0}"
-      state=$( echo "${state}" | jq -c ".T${bondDevice} |= ${deviceState}" )
-      echo "${state}" > "$BONDBRIDGE_TIMER_STATE_FILE"
-   fi 
+
+   if [[ "$deviceState" == "null" || "$state" == "{}" ]]; then
+       deviceState="{\"name\":\"${device}\",\"timeToOn\":0,\"timeToOff\":0,\"setTime\":0}"
+       state=$(jq -c --argjson v "$deviceState" ".T${bondDevice} = \$v" <<< "$state")
+       echo "$state" > "$BONDBRIDGE_TIMER_STATE_FILE"
+   fi
 
    timeToOn=$(echo "$state"  | jq ".T${bondDevice}.timeToOn")
    timeToOff=$(echo "$state" | jq ".T${bondDevice}.timeToOff")
@@ -242,15 +244,15 @@ function queryTimerStateFile()
 
    tm0=$( date -d @"$t0" | cut -d" " -f4 )
    tmf="+++ $( date -d @"$tf" | cut -d" " -f4 )"
-   log=$(printf "BondBridge_${bondDevice}_${ioType} %12s %8s %5s timer $rc $io $device $characteristic" "$tmf" "$tm0" "$dt") 
-   logBBdiagnostic "$log" 
+   log=$(printf "BondBridge_${bondDevice}_${ioType} %12s %8s %5s timer $rc $io $device $characteristic" "$tmf" "$tm0" "$dt")
+   logBBdiagnostic "$log"
 }
 
 function updateTimers()
 {
    # Update fan timer
    if [ $fanTimerSpecified = true ]; then
-      if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then # no update required 
+      if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then # no update required
          echo ""
       elif [[ "$power" = "1" && "$timeToOn" != "0" ]]; then # reset timer
          timeToOn=0
@@ -266,7 +268,7 @@ function updateTimers()
             setBondBridge "${fanDevice}" "TurnOff"
             updateBondBridgeStateFile "${fanDevice}" "TurnOff" ""
          fi
-      elif [[ "$power" = "0" && "$timeToOff" != "0" ]]; then # reset timer 
+      elif [[ "$power" = "0" && "$timeToOff" != "0" ]]; then # reset timer
          timeToOff=0
          setTime=${t0}
          updateTimerStateFile
@@ -285,9 +287,9 @@ function updateTimers()
 
    # Update light timer
    if [ "${lightTimerSpecified}" = true ]; then
-      if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then # no update required 
+      if [[ "$timeToOn" = "0" && "$timeToOff" = "0" ]]; then # no update required
          echo ""
-      elif [[ "$light" = "1" && "$timeToOn" != "0" ]]; then # reset timer        
+      elif [[ "$light" = "1" && "$timeToOn" != "0" ]]; then # reset time
          timeToOn=0
          setTime=${t0}
          updateTimerStateFile
@@ -301,7 +303,7 @@ function updateTimers()
             setBondBridge "${lightDevice}" "TurnLightOff"
             updateBondBridgeStateFile "${lightDevice}" "TurnLightOff" ""
          fi
-      elif [[ "$light" = "0" && "$timeToOff" != "0" ]]; then # reset timer        
+      elif [[ "$light" = "0" && "$timeToOff" != "0" ]]; then # reset timer
          timeToOff=0
          setTime=${t0}
          updateTimerStateFile
@@ -329,8 +331,8 @@ function updateTimerStateFile()
    echo "${updatedState}" > "$BONDBRIDGE_TIMER_STATE_FILE"
    # Diagnostic logging
    tm0=$( date -d @"$t0" | cut -d" " -f4 )
-   log=$(printf "BondBridge_${bondDevice}_${ioType} %-6s%6s %8s %5s timer $rc $io $device $characteristic" "$timeToOn" "$timeToOff" "$tm0" "0") 
-   logBBdiagnostic "$log" 
+   log=$(printf "BondBridge_${bondDevice}_${ioType} %-6s%6s %8s %5s timer $rc $io $device $characteristic" "$timeToOn" "$timeToOff" "$tm0" "0")
+   logBBdiagnostic "$log"
 }
 
 # main starts here
@@ -366,6 +368,7 @@ if [ $argEND -ge 1 ]; then
       exit 1
    fi
 fi
+
 # For any unprocessed arguments
 if [ $argEND -ge $argSTART ]; then
    # Scan the remaining options
@@ -399,19 +402,19 @@ if [ $argEND -ge $argSTART ]; then
          ;;
          device* )
             #
-            # See if the option starts with a "device" for bond device         
+            # See if the option starts with a "device" for bond device
             #
             bondDevice="${v:7}"
          ;;
          fanDevice* )
             #
-            # See if the option starts with a "fanDevice": associated device        
+            # See if the option starts with a "fanDevice": associated device
             #
             fanDevice="${v:10}"
          ;;
          lightDevice* )
             #
-            # See if the option starts with a "lightDevice": associated device        
+            # See if the option starts with a "lightDevice": associated device
             #
             lightDevice="${v:12}"
          ;;
