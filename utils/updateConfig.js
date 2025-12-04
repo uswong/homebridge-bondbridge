@@ -3,20 +3,19 @@ const { createBondbridgeConfig } = require("./createBondbridgeConfig");
 const { getBondHost } = require("./getBondHost");
 const { readConfig } = require("./readConfig");
 
-const chalk = require("chalk");
-
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function updateConfig(config, log, storagePath, pluginPath) {
-  log.info(chalk.yellow('Running createBondbridgeConfig...'));
+  log.warn('*** Running createBondbridgeConfig...');
 
   // resolve ID for IP or use IP directly if specified
   let IPs = [];
+  let devicesAutoDiscovered = false;
 
   try {
-    IPs = await getBondHost(config, log);
+    ({ IPs, devicesAutoDiscovered } = await getBondHost(config, log));
   } catch (err) {
     log.error(`❌ ${err.message}`);
     const existingConfig = readConfig( storagePath, log );
@@ -32,7 +31,11 @@ async function updateConfig(config, log, storagePath, pluginPath) {
 
   try {
     const bbConfig = await createBondbridgeConfig(config, IPs, log, pluginPath);
-    log.info(`✅ DONE! createBondbridgeConfig completed successfully for ${noOfDevicesProcessed}/${noOfDevices} device(s)!`);
+    if (devicesAutoDiscovered) {
+      log.info(`✅ DONE! createBondbridgeConfig completed successfully for ${noOfDevicesProcessed}/${noOfDevices} "auto-discovered" device(s)!`);
+    } else {
+      log.info(`✅ DONE! createBondbridgeConfig completed successfully for ${noOfDevicesProcessed}/${noOfDevices} device(s)!`);
+    }
     log.debug('Updated Bondbridge config:\n' + JSON.stringify(bbConfig));
     return bbConfig;
   } catch (err) {
