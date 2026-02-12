@@ -25,7 +25,6 @@
         "minItems": 1,
         "maxItems": 3,
         "items": {
-          "title": "Bond Bridge device",
           "type": "object",
           "properties": {
             "ipAddress": {
@@ -34,7 +33,7 @@
               "type": "string",
               "pattern": "^(?:[A-Z0-9]{6}(?:[A-Z0-9]{3})?|(?:[0-9]{1,3}\\.){3}[0-9]{1,3})$",
               "required": true,
-              "errorMessage": "Must be a valid IPv4 address."
+              "errorMessage": "Must be a valid Bond ID or valid IPv4 address."
             },
             "token": {
               "title": "Local Token",
@@ -126,11 +125,10 @@
         {
           "key": "devices[]",
           "type": "fieldset`",
-          "title": "{{ value.title }}",
           "items": [
             {
               "type": "fieldset",
-              "title": "Celing Fan and its associated Light specific settings",
+              "title": "Ceiling Fan and its associated Light specific settings",
               "expandable": true,
               "expanded": false,
               "items": [
