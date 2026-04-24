@@ -3,10 +3,6 @@ const { createBondbridgeConfig } = require("./createBondbridgeConfig");
 const { getBondHost } = require("./getBondHost");
 const { readConfig } = require("./readConfig");
 
-async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function updateConfig(config, log, storagePath, pluginPath) {
   log.warn('*** Running createBondbridgeConfig...');
 
@@ -37,6 +33,13 @@ async function updateConfig(config, log, storagePath, pluginPath) {
       log.info(`✅ DONE! createBondbridgeConfig completed successfully for ${noOfDevicesProcessed}/${noOfDevices} device(s)!`);
     }
     log.debug('Updated Bondbridge config:\n' + JSON.stringify(bbConfig));
+
+    // give a warning if there is no accessories created in the config.
+    if (Array.isArray(bbConfig.accessories) && bbConfig.accessories.length === 0) {
+      log.warn(
+        '⚠️ No accessories will be created because the accessories array in the config is empty! Make sure Devices are properly defined in your Bond Bridge.'
+      );
+    }
     return bbConfig;
   } catch (err) {
     log.error(`❌ ${err.message}`);
